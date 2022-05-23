@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="17dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/refactor_searching"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/recreate_searching_guide_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:backgroundTint="@color/grey"
+                android:text="Пересоздать поиски"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Настройки по производителям:"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="Оболочки некоторых девайсов блокируют фоновую работу приложения. Из-за этого программа не может запускаться в фоне для проверок новых объявлений на сайте и поэтому вы не получаете уведомлений. Для решения проблемы необходимо настроить устройство по инструкции ниже:"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <Button
+                    android:id="@+id/meizu_guide_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="meizu"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/grey"/>
+
+                <Button
+                    android:id="@+id/xiaomi_guide_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="xiaomi"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/grey"
+                    android:layout_marginStart="15dp"/>
+
+                <Button
+                    android:id="@+id/asus_guide_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="asus"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:backgroundTint="@color/grey"
+                    android:layout_marginStart="15dp"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="На некоторых устройствах используется 'Doze Mode' (режим усиленного энергосбережения). Для стабильной работы приложения необходимо добавить его в исключение 'Doze Mode'. Для этого необходимо перейти в настройки, найти в списке приложение автопоиска и отключить для него энергосбережение."
+                android:textSize="15sp"/>
+
+            <Button
+                android:id="@+id/open_settings_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Открыть настройки"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/grey" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginTop="10dp"
+                android:text="Если вышеописанные настройки не помогли или вашего девайса нет в списке, то перейдите по кнопке ниже на более детальную инструкцию, выбрав бренд своего устройства на открывшейся странице."
+                />
+
+            <Button
+                android:id="@+id/open_guide_btn"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:text="Инструкция"
+                android:layout_gravity="center"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/grey" />
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</LinearLayout>
