@@ -33,6 +33,12 @@
             android:label="Новый автопоиск"
             android:parentActivityName=".MainActivity">
         </activity>
+
+        <activity
+            android:name=".activities.NotificationSettings"
+            android:parentActivityName=".MainActivity"
+            android:label="Настройки">
+        </activity>
     </application>
 
 </manifest>

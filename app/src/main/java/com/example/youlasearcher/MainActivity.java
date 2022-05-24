@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.youlasearcher.activities.HelpGuideActivity;
+import com.example.youlasearcher.activities.NotificationSettings;
 import com.example.youlasearcher.activities.SearchingTaskActivity;
 import com.example.youlasearcher.models.dialogFragments.GuideDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.notification_settings:
                 // action
-
+                startActivity(new Intent(MainActivity.this, NotificationSettings.class));
                 return true;
 
         }
