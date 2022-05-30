@@ -1,30 +1,26 @@
 package com.example.youlasearcher.activities;
 
-import android.app.AlertDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youlasearcher.MainActivity;
 import com.example.youlasearcher.R;
 import com.example.youlasearcher.interfaces.Changeable;
+import com.example.youlasearcher.interfaces.ChangeableTime;
 import com.example.youlasearcher.models.dialogFragments.PeriodDialogFragment;
+import com.example.youlasearcher.models.dialogFragments.TimePickerDialogFragment;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-public class SearchingTaskActivity extends AppCompatActivity implements Changeable {
+public class SearchingTaskActivity extends AppCompatActivity implements Changeable, ChangeableTime {
 
     private List<State> states = new ArrayList<>();
     private ListView symbolsList;
@@ -34,7 +30,6 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
     private State searchWeb = new State("Предварительные результаты", "Нажмите, чтобы посмотреть", R.drawable.ic_search);
     private State searchApp = new State("Предварительные результаты", "Внутри приложения", R.drawable.ic_search);
     private StateAdapter stateAdapter;
-    private Calendar dateAndTime = Calendar.getInstance();
 
 
     @Override
@@ -60,9 +55,11 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                         fragment.show(getSupportFragmentManager(), "period");
                         break;
                     case "Время работы поиска":
-//                        TimeDialogFragment timeFragment = new TimeDialogFragment();
-//                        timeFragment.show(getSupportFragmentManager(), "time picker");
-                        showDialog();
+                        Bundle args = new Bundle();
+                        args.putString("subtitle", timeModule.getSubTitle());
+                        TimePickerDialogFragment timePickerDialogFragment = new TimePickerDialogFragment();
+                        timePickerDialogFragment.setArguments(args);
+                        timePickerDialogFragment.show(getSupportFragmentManager(), "timePicker");
                         break;
                     case "Параметры поиска":
                         break;
@@ -111,43 +108,17 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
         stateAdapter.notifyDataSetChanged();
     }
 
-    public void showDialog() {
-        AlertDialog.Builder builder
-                = new AlertDialog.Builder(this);
-        builder.setTitle("Установка времени");
-        final View customLayout
-                = getLayoutInflater()
-                .inflate(
-                        R.layout.dialog_time_picker,
-                        null);
-        builder.setView(customLayout);
-        EditText start = customLayout.findViewById(R.id.start);
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                TimePickerDialog.OnTimeSetListener t = new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        dateAndTime.set(Calendar.HOUR_OF_DAY, i);
-                        dateAndTime.set(Calendar.MINUTE, i1);
-                    }
-                };
-
-
-                start.setText(DateUtils.formatDateTime(SearchingTaskActivity.this,
-                        dateAndTime.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME));
-
-
-                new TimePickerDialog(SearchingTaskActivity.this, t,
-                        dateAndTime.get(Calendar.HOUR_OF_DAY),
-                        dateAndTime.get(Calendar.MINUTE), true)
-                        .show();
-
-            }
-        });
-        builder.create().show();
+    @Override
+    public void changeTime(String[] time) {
+        if (time[0].equals("Круглосуточно")) {
+            timeModule.setSubTitle(time[0]);
+        } else {
+            timeModule.setSubTitle("С " + time[0] + " до " + time[1]);
+        }
+        stateAdapter.notifyDataSetChanged();
     }
+
+
 
 
 }

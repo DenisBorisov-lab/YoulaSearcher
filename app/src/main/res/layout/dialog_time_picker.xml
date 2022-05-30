@@ -30,7 +30,8 @@
             android:hint="08:00"
             android:inputType="time"
             android:textSize="25sp"
-            android:focusable="false"/>
+            android:focusable="false"
+            android:textAlignment="center"/>
 <!--            android:enabled="false"/>-->
 
 
@@ -38,7 +39,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
 
 
         <EditText
@@ -49,7 +52,10 @@
             android:editable="false"
             android:hint="23:00"
             android:inputType="time"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:focusable="false"
+            android:textAlignment="center"/>
+
 
 
     </LinearLayout>
