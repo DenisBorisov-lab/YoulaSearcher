@@ -36,7 +36,6 @@ public class TimePickerDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
 
-
         AlertDialog.Builder builder
                 = new AlertDialog.Builder(getActivity());
         builder.setTitle("Установка времени");
@@ -113,11 +112,11 @@ public class TimePickerDialogFragment extends DialogFragment {
         });
 
         String subtitle = getArguments().getString("subtitle");
-        if (subtitle.equals("Круглосуточно")){
+        if (subtitle.equals("Круглосуточно")) {
             checkBox.setChecked(true);
             start.setEnabled(false);
             end.setEnabled(false);
-        }else{
+        } else {
             String[] s = subtitle.split(" ");
             String a = s[1];
             String b = s[3];

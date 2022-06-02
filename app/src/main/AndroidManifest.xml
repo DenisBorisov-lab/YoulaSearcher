@@ -39,6 +39,13 @@
             android:parentActivityName=".MainActivity"
             android:label="Настройки">
         </activity>
+
+        <activity
+            android:name=".activities.SearchingSettingsActivity"
+            android:label="Настройка автопоиска"
+            android:parentActivityName=".activities.SearchingTaskActivity">
+        </activity>
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.example.youlasearcher.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,6 +9,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youlasearcher.MainActivity;
@@ -30,6 +35,22 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
     private State searchWeb = new State("Предварительные результаты", "Нажмите, чтобы посмотреть", R.drawable.ic_search);
     private State searchApp = new State("Предварительные результаты", "Внутри приложения", R.drawable.ic_search);
     private StateAdapter stateAdapter;
+    static final String URL = "URL";
+
+
+    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent intent = result.getData();
+                        String url = intent.getStringExtra(URL);
+                        options.setSubTitle(url);
+                        stateAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
 
 
     @Override
@@ -62,6 +83,8 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                         timePickerDialogFragment.show(getSupportFragmentManager(), "timePicker");
                         break;
                     case "Параметры поиска":
+                        Intent settingsActivity = new Intent(SearchingTaskActivity.this, SearchingSettingsActivity.class);
+                        mStartForResult.launch(settingsActivity);
                         break;
                     default:
                         if (selectedState.getSubTitle().equals("Нажмите, чтобы посмотреть")) {
@@ -117,8 +140,6 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
         }
         stateAdapter.notifyDataSetChanged();
     }
-
-
 
 
 }
