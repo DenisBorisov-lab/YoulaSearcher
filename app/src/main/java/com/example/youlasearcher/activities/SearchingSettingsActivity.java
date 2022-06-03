@@ -2,10 +2,13 @@ package com.example.youlasearcher.activities;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -24,13 +27,21 @@ public class SearchingSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searching_settings);
-
         webView = findViewById(R.id.web_view);
-        progressBar = findViewById(R.id.progressBar);
-        saveBtn = findViewById(R.id.save_settings);
-        webView.getSettings().setJavaScriptEnabled(true);
+
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setAllowContentAccess(true);
+        settings.setDomStorageEnabled(true);
+        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         webView.loadUrl("https://youla.ru/");
         webView.setWebViewClient(new MyWebViewClient());
+
+        progressBar = findViewById(R.id.progressBar);
+        saveBtn = findViewById(R.id.save_settings);
+
+
+
 
         saveBtn.setOnClickListener(view -> {
             String url = webView.getUrl();
@@ -73,7 +84,5 @@ public class SearchingSettingsActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-
 
 }

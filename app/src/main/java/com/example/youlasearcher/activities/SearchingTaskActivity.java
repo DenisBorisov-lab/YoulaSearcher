@@ -2,12 +2,14 @@ package com.example.youlasearcher.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -31,7 +33,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
     private ListView symbolsList;
     private State period = new State("Периодичность поиска", "Каждые 5 минут", R.drawable.ic_refresh);
     private State timeModule = new State("Время работы поиска", "Круглосуточно", R.drawable.ic_schedule);
-    private State options = new State("Параметры поиска", "нажмите для настройки", R.drawable.ic_wrench);
+    private State options = new State("Параметры поиска", "Нажмите для настройки", R.drawable.ic_wrench);
     private State searchWeb = new State("Предварительные результаты", "Нажмите, чтобы посмотреть", R.drawable.ic_search);
     private State searchApp = new State("Предварительные результаты", "Внутри приложения", R.drawable.ic_search);
     private StateAdapter stateAdapter;
@@ -88,9 +90,15 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                         break;
                     default:
                         if (selectedState.getSubTitle().equals("Нажмите, чтобы посмотреть")) {
-
+                            if (options.getSubTitle().equals("Нажмите для настройки")) {
+                                Toast toast = Toast.makeText(SearchingTaskActivity.this, "Укажите параметры поиска!", Toast.LENGTH_LONG);
+                                toast.show();
+                            } else {
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(options.getSubTitle()));
+                                startActivity(browserIntent);
+                            }
                         } else {
-
+                            // Предварительные результаты в приложении
                         }
                         break;
                 }
