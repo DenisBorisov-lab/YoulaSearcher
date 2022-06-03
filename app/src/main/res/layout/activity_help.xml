@@ -43,43 +43,43 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
                 android:text="Оболочки некоторых девайсов блокируют фоновую работу приложения. Из-за этого программа не может запускаться в фоне для проверок новых объявлений на сайте и поэтому вы не получаете уведомлений. Для решения проблемы необходимо настроить устройство по инструкции ниже:"
-                />
+                android:textSize="15sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/meizu_guide_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/grey"
                     android:text="meizu"
-                    android:textSize="15sp"
                     android:textColor="@color/black"
-                    android:backgroundTint="@color/grey"/>
+                    android:textSize="15sp" />
 
                 <Button
                     android:id="@+id/xiaomi_guide_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="xiaomi"
-                    android:textSize="15sp"
-                    android:textColor="@color/black"
+                    android:layout_marginStart="15dp"
                     android:backgroundTint="@color/grey"
-                    android:layout_marginStart="15dp"/>
+                    android:text="xiaomi"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
 
                 <Button
                     android:id="@+id/asus_guide_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="asus"
-                    android:textSize="15sp"
-                    android:textColor="@color/black"
+                    android:layout_marginStart="15dp"
                     android:backgroundTint="@color/grey"
-                    android:layout_marginStart="15dp"/>
+                    android:text="asus"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
@@ -88,37 +88,36 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="На некоторых устройствах используется 'Doze Mode' (режим усиленного энергосбережения). Для стабильной работы приложения необходимо добавить его в исключение 'Doze Mode'. Для этого необходимо перейти в настройки, найти в списке приложение автопоиска и отключить для него энергосбережение."
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
 
             <Button
                 android:id="@+id/open_settings_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Открыть настройки"
-                android:layout_marginTop="5dp"
                 android:layout_gravity="center"
-                android:textSize="15sp"
+                android:layout_marginTop="5dp"
+                android:backgroundTint="@color/grey"
+                android:text="Открыть настройки"
                 android:textColor="@color/black"
-                android:backgroundTint="@color/grey" />
+                android:textSize="15sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
                 android:layout_marginTop="10dp"
                 android:text="Если вышеописанные настройки не помогли или вашего девайса нет в списке, то перейдите по кнопке ниже на более детальную инструкцию, выбрав бренд своего устройства на открывшейся странице."
-                />
+                android:textSize="15sp" />
 
             <Button
                 android:id="@+id/open_guide_btn"
                 android:layout_width="match_parent"
-                android:layout_marginTop="5dp"
                 android:layout_height="wrap_content"
-                android:text="Инструкция"
                 android:layout_gravity="center"
-                android:textSize="15sp"
+                android:layout_marginTop="5dp"
+                android:backgroundTint="@color/grey"
+                android:text="Инструкция"
                 android:textColor="@color/black"
-                android:backgroundTint="@color/grey" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 

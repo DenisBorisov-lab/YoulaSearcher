@@ -5,15 +5,9 @@ public class State {
     private String subTitle;
     private int symbolResource;
 
-    public void setTitle(String title) {
+    public State(String title, String subTitle, int symbolResource) {
         this.title = title;
-    }
-
-    public void setSubTitle(String subTitle) {
         this.subTitle = subTitle;
-    }
-
-    public void setSymbolResource(int symbolResource) {
         this.symbolResource = symbolResource;
     }
 
@@ -21,17 +15,23 @@ public class State {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getSubTitle() {
         return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
     }
 
     public int getSymbolResource() {
         return symbolResource;
     }
 
-    public State(String title, String subTitle, int symbolResource) {
-        this.title = title;
-        this.subTitle = subTitle;
+    public void setSymbolResource(int symbolResource) {
         this.symbolResource = symbolResource;
     }
 }

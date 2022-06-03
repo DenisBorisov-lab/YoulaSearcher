@@ -2,11 +2,9 @@ package com.example.youlasearcher.activities;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -41,8 +39,6 @@ public class SearchingSettingsActivity extends AppCompatActivity {
         saveBtn = findViewById(R.id.save_settings);
 
 
-
-
         saveBtn.setOnClickListener(view -> {
             String url = webView.getUrl();
             Intent intent = new Intent(this, SearchingTaskActivity.class);
@@ -51,6 +47,15 @@ public class SearchingSettingsActivity extends AppCompatActivity {
             setResult(RESULT_OK, intent);
             finish();
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private class MyWebViewClient extends WebViewClient {
@@ -69,20 +74,11 @@ public class SearchingSettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPageFinished (WebView view, String url){
+        public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             progressBar.setVisibility(View.GONE);
         }
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
     }
 
 }

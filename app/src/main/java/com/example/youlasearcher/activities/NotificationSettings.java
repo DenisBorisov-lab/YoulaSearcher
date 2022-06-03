@@ -1,7 +1,6 @@
 package com.example.youlasearcher.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,14 +14,13 @@ import java.util.List;
 
 public class NotificationSettings extends AppCompatActivity {
 
-    private ListView listView;
     private static SettingsAdapter adapter;
+    private ListView listView;
     private List<SettingsState> states = new ArrayList<>();
     private SettingsState ringtone = new SettingsState("Рингтон", "По умолчанию (Неизвестная мелодия)", false);
     private SettingsState vibration = new SettingsState("Вибрация", "Вибрация при получении уведомлений", true);
     private SettingsState wifiSearching = new SettingsState("Искать только по Wi-Fi", "Поиск осуществляется только при подулючении к Wi-Fi", false);
     private SettingsState openingWay = new SettingsState("Способ открытия уведомлений", "В какой программе будут открываться найденные уведомления", false);
-
 
 
     @Override
@@ -43,16 +41,12 @@ public class NotificationSettings extends AppCompatActivity {
         });
 
 
-
-
     }
 
-    private void setInitialData(){
+    private void setInitialData() {
         states.add(ringtone);
         states.add(vibration);
         states.add(wifiSearching);
         states.add(openingWay);
     }
-
-
 }

@@ -23,9 +23,10 @@ public class StateAdapter extends ArrayAdapter<State> {
         this.layout = resource;
         this.inflater = LayoutInflater.from(context);
     }
+
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View view=inflater.inflate(this.layout, parent, false);
+        View view = inflater.inflate(this.layout, parent, false);
 
         ImageView flagView = view.findViewById(R.id.symbol);
         TextView nameView = view.findViewById(R.id.title);

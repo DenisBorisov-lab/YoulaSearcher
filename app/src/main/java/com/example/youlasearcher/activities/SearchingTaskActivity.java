@@ -29,6 +29,7 @@ import java.util.List;
 
 public class SearchingTaskActivity extends AppCompatActivity implements Changeable, ChangeableTime {
 
+    static final String URL = "URL";
     private List<State> states = new ArrayList<>();
     private ListView symbolsList;
     private State period = new State("Периодичность поиска", "Каждые 5 минут", R.drawable.ic_refresh);
@@ -37,9 +38,6 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
     private State searchWeb = new State("Предварительные результаты", "Нажмите, чтобы посмотреть", R.drawable.ic_search);
     private State searchApp = new State("Предварительные результаты", "Внутри приложения", R.drawable.ic_search);
     private StateAdapter stateAdapter;
-    static final String URL = "URL";
-
-
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override

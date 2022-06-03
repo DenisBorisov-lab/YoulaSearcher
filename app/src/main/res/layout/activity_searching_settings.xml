@@ -8,26 +8,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_gravity="top"
         android:background="@color/dark_grey"
-        android:layout_gravity="top">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_info"
-            app:tint="@color/grey"
+            android:layout_gravity="center"
             android:layout_marginStart="5dp"
-            android:layout_gravity="center"/>
+            android:src="@drawable/ic_info"
+            app:tint="@color/grey" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
             android:layout_gravity="center"
-            android:textColor="@color/grey"
             android:layout_margin="7dp"
-            android:text="Настройте фильтр -> нажмите кнопку 'Применить'. После того, как фильтр применится (появится список объявлений), нажмите кнопку 'Сохранить'"/>
+            android:text="Настройте фильтр -> нажмите кнопку 'Применить'. После того, как фильтр применится (появится список объявлений), нажмите кнопку 'Сохранить'"
+            android:textColor="@color/grey"
+            android:textSize="13sp" />
 
     </LinearLayout>
 
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:indeterminate="true"/>
+        android:indeterminate="true" />
 
 
     <WebView
@@ -46,16 +46,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/progressBar"
-        android:layout_weight="20"/>
+        android:layout_weight="20" />
 
     <Button
         android:id="@+id/save_settings"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Сохранить"
-        android:textSize="15sp"
+        android:layout_gravity="bottom"
         android:layout_weight="1"
         android:backgroundTint="@color/dark_grey"
-        android:layout_gravity="bottom"
-        android:textColor="@color/grey"/>
+        android:text="Сохранить"
+        android:textColor="@color/grey"
+        android:textSize="15sp" />
 </LinearLayout>

@@ -5,8 +5,7 @@
         android:id="@+id/notification_settings"
         android:icon="@drawable/ic_settings"
         android:title="Настройки уведомлений"
-        app:showAsAction="ifRoom"
-    />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/stop_searching"
@@ -17,15 +16,15 @@
         android:id="@+id/recreate_searching"
         android:orderInCategory="2"
         android:title="Пересоздать поиски"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
     <item
         android:id="@+id/help"
         android:orderInCategory="3"
         android:title="Если не работает?"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
     <item
         android:id="@+id/instruction"
         android:orderInCategory="4"
         android:title="Руководство"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

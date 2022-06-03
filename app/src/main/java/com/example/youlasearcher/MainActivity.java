@@ -1,13 +1,11 @@
 package com.example.youlasearcher;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youlasearcher.activities.HelpGuideActivity;
 import com.example.youlasearcher.activities.NotificationSettings;
@@ -38,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch(id){
+        switch (id) {
             case R.id.stop_searching:
                 // логика остановки поиска
                 return true;

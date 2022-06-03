@@ -6,7 +6,6 @@
         android:id="@+id/delete_searching_task"
         android:icon="@drawable/ic_trash_can"
         android:title="Удалить автопоиск"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
 
 </menu>

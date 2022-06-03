@@ -15,7 +15,7 @@ public class PeriodDialogFragment extends DialogFragment {
     private Changeable changeable;
 
     @Override
-    public void onAttach(Context context){
+    public void onAttach(Context context) {
         super.onAttach(context);
         changeable = (Changeable) context;
     }

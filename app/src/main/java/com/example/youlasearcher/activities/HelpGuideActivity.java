@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Html;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -16,11 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youlasearcher.R;
 import com.example.youlasearcher.models.dialogFragments.AsusGuideDialogFragment;
-import com.example.youlasearcher.models.dialogFragments.GuideDialogFragment;
 import com.example.youlasearcher.models.dialogFragments.MeizuGuideDialogFragment;
 import com.example.youlasearcher.models.dialogFragments.XiaomiGuideDialogFragment;
-
-import java.util.EventListener;
 
 public class HelpGuideActivity extends AppCompatActivity {
 
@@ -71,7 +67,6 @@ public class HelpGuideActivity extends AppCompatActivity {
             // открыть инструкцию
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dontkillmyapp.com/")));
         });
-
 
 
         refactor_searching.setText(Html.fromHtml("Если <strong>поиска работали</strong>, но через какое-то время перестали приходить оповещения, нажмите кнопку 'пересоздать поиски'."));
