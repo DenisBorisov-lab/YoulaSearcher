@@ -47,34 +47,33 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
         title.setText(state.getTitle());
         switchCompat.setChecked(state.isChecked());
         subtitle.setText(state.getSubTitle());
-//        if(state.getTitle().equals("Вибрация")){
-//            switchCompat.setTag("vibration_button");
-//        }else if(state.getTitle().equals("Искать только по Wi-Fi")){
-//            switchCompat.setTag("wifi_searching");
-//        }
+        if(state.getTitle().equals("Вибрация")){
+            switchCompat.setTag("vibration_button");
+        }else if(state.getTitle().equals("Искать только по Wi-Fi")){
+            switchCompat.setTag("wifi_searching");
+        }
 
-//        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                if (switchCompat.getTag().equals("vibration_button")){
-////                    boolean result = !settings.getBoolean("vibration", true);
-//                    switchCompat.setChecked(b);
-//                    SharedPreferences.Editor editor = settings.edit();
-//                    editor.putBoolean("vibration", b);
-//                    editor.apply();
-//                    System.out.println("Что-то поменялось");
-//                    NotificationSettings.isChecked();
-//                }else{
-//                    boolean result = !switchCompat.isChecked();
-//                    switchCompat.setChecked(result);
-//                    SharedPreferences.Editor editor = settings.edit();
-//                    editor.putBoolean("wifi_searching", result);
-//                    editor.apply();
-//                    System.out.println("Что-то поменялось");
-//                    notifyDataSetChanged();
-//                }
-//            }
-//        });
+        switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (switchCompat.getTag().equals("vibration_button")){
+//                    boolean result = !settings.getBoolean("vibration", true);
+                    switchCompat.setChecked(b);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putBoolean("vibration", b);
+                    editor.apply();
+                    System.out.println("Что-то поменялось");
+                }else{
+                    boolean result = !switchCompat.isChecked();
+                    switchCompat.setChecked(result);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putBoolean("wifi_searching", result);
+                    editor.apply();
+                    System.out.println("Что-то поменялось");
+                    notifyDataSetChanged();
+                }
+            }
+        });
 
         if(state.getTitle().equals("Рингтон") || state.getTitle().equals("Способ открытия уведомлений")){
             switchCompat.setVisibility(View.GONE);
