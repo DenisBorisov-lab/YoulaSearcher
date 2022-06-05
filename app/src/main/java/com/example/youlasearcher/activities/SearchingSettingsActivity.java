@@ -1,7 +1,9 @@
 package com.example.youlasearcher.activities;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -47,6 +49,8 @@ public class SearchingSettingsActivity extends AppCompatActivity {
             setResult(RESULT_OK, intent);
             finish();
         });
+
+
     }
 
     @Override
@@ -80,5 +84,4 @@ public class SearchingSettingsActivity extends AppCompatActivity {
         }
 
     }
-
 }

@@ -41,11 +41,13 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
 
         SettingsState state = states.get(position);
 
-        SharedPreferences settings = getContext().getSharedPreferences("NotificationSettings", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("vibration", true);
-        editor.putBoolean("wifi", false);
-        editor.apply();
+        SharedPreferences settings = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
+        if (!settings.contains("vibration")){
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean("vibration", true);
+            editor.putBoolean("wifi", false);
+            editor.apply();
+        }
 
         title.setText(state.getTitle());
         switchCompat.setChecked(state.isChecked());
@@ -78,14 +80,14 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
                 return;
             }
 
-            if (layoutCc.getTag().equals("vibration_layout")) {
+            if (layoutCc.getTag().equals("wifi_layout")) {
                 switchCompat.setChecked(!switchCompat.isChecked());
                 setWifiSearching(switchCompat.isChecked());
-            } else if (layoutCc.getTag().equals("wifi_layout")) {
+            } else if (layoutCc.getTag().equals("vibration_layout")) {
                 switchCompat.setChecked(!switchCompat.isChecked());
                 setVibration(switchCompat.isChecked());
             } else {
-                Log.w("SettingsAdapter", "Неизвестный тег");
+                Log.w("SettingsAdapter", "Неизвестный тег 1");
             }
         });
 
@@ -96,18 +98,20 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
     }
 
     private void setVibration(boolean val) {
-        SharedPreferences settings = getContext().getSharedPreferences("NotificationSettings", Context.MODE_PRIVATE);
+        SharedPreferences settings = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
         editor.putBoolean("vibration", val);
         editor.apply();
+        System.out.println(val);
     }
 
     private void setWifiSearching(boolean val) {
-        SharedPreferences settings = getContext().getSharedPreferences("NotificationSettings", Context.MODE_PRIVATE);
+        SharedPreferences settings = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
         editor.putBoolean("wifi_searching", val);
         editor.apply();
+        System.out.println(val);
     }
 }

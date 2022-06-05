@@ -1,5 +1,7 @@
 package com.example.youlasearcher.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +18,7 @@ public class NotificationSettings extends AppCompatActivity {
 
     private static SettingsAdapter adapter;
     private ListView listView;
+    private SharedPreferences sharedPreferences;
     private List<SettingsState> states = new ArrayList<>();
     private SettingsState ringtone = new SettingsState("Рингтон", "По умолчанию (Неизвестная мелодия)", false);
     private SettingsState vibration = new SettingsState("Вибрация", "Вибрация при получении уведомлений", true);
@@ -27,6 +30,7 @@ public class NotificationSettings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_settings);
+        sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
 
         setInitialData();
         listView = findViewById(R.id.settings);
@@ -49,4 +53,16 @@ public class NotificationSettings extends AppCompatActivity {
         states.add(wifiSearching);
         states.add(openingWay);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean a = sharedPreferences.getBoolean("vibration", true);
+        boolean b = sharedPreferences.getBoolean("wifi_searching", false);
+        vibration.setChecked(a);
+        wifiSearching.setChecked(b);
+        adapter.notifyDataSetChanged();
+
+    }
+
 }
