@@ -1,6 +1,8 @@
 package com.example.youlasearcher;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,11 +16,21 @@ import com.example.youlasearcher.models.dialogFragments.GuideDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
+    private SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        if (!sharedPreferences.contains("vibration")){
+            SharedPreferences.Editor edit = sharedPreferences.edit();
+            edit.putBoolean("vibration", true);
+            edit.putBoolean("wifi_searching", false);
+            edit.apply();
+        }
 
         FloatingActionButton addSearchingBtn = findViewById(R.id.add_searching_btn);
 

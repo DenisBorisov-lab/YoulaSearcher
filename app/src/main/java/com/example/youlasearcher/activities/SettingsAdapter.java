@@ -65,10 +65,10 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (switchCompat.getTag().equals("vibration_button")) {
                     switchCompat.setChecked(b);
-                    setWifiSearching(b);
+                    setVibration(b);
                 } else if (switchCompat.getTag().equals("wifi_searching")) {
                     switchCompat.setChecked(b);
-                    setVibration(b);
+                    setWifiSearching(b);
                 } else {
                     Log.w("SettingsAdapter", "Неизвестный тег");
                 }
