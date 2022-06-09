@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -17,6 +18,9 @@ import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youlasearcher.R;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class SearchingSettingsActivity extends AppCompatActivity {
     private WebView webView;
@@ -50,6 +54,20 @@ public class SearchingSettingsActivity extends AppCompatActivity {
             finish();
         });
 
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(webView, url);
+                String cookies = CookieManager.getInstance().getCookie(url);
+                String location = cookies.split("; ")[1];
+                try {
+                    String res = java.net.URLDecoder.decode(location, StandardCharsets.UTF_8.name());
+                    String json = res.split("=")[1];
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
