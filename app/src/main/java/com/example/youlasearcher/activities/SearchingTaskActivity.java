@@ -125,7 +125,16 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                                 startActivity(browserIntent);
                             }
                         } else {
+                            if (options.getSubTitle().equals("Нажмите для настройки")) {
+                                Toast toast = Toast.makeText(SearchingTaskActivity.this, "Укажите параметры поиска!", Toast.LENGTH_LONG);
+                                toast.show();
+                            }else{
+                                Intent advanceResultsIntent = new Intent(SearchingTaskActivity.this, AdvanceResultsActivity.class);
+                                startActivity(advanceResultsIntent);
+                            }
                             // TODO: 05.06.2022 предварительные результаты в приложении
+
+
                         }
                         break;
                 }

@@ -26,22 +26,27 @@
         <activity
             android:name=".activities.HelpGuideActivity"
             android:label="Если не работает?"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
 
         <activity
             android:name=".activities.SearchingTaskActivity"
             android:label="Новый автопоиск"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
 
         <activity
             android:name=".activities.NotificationSettings"
             android:label="Настройки"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
 
         <activity
             android:name=".activities.SearchingSettingsActivity"
             android:label="Настройка автопоиска"
-            android:parentActivityName=".activities.SearchingTaskActivity"></activity>
+            android:parentActivityName=".activities.SearchingTaskActivity" />
+
+        <activity
+            android:name=".activities.AdvanceResultsActivity"
+            android:label="Результат поиска"
+            android:parentActivityName=".activities.SearchingTaskActivity" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
