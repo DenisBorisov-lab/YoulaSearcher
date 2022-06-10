@@ -130,6 +130,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                                 toast.show();
                             }else{
                                 Intent advanceResultsIntent = new Intent(SearchingTaskActivity.this, AdvanceResultsActivity.class);
+                                advanceResultsIntent.putExtra("url", options.getSubTitle());
                                 startActivity(advanceResultsIntent);
                             }
                             // TODO: 05.06.2022 предварительные результаты в приложении

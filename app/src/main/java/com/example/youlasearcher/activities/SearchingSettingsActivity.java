@@ -22,6 +22,8 @@ import com.example.youlasearcher.R;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
+import lombok.SneakyThrows;
+
 public class SearchingSettingsActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progressBar;
@@ -44,6 +46,29 @@ public class SearchingSettingsActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         saveBtn = findViewById(R.id.save_settings);
 
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(webView, url);
+                String cookies = CookieManager.getInstance().getCookie(url);
+                String[] attributes = cookies.split("; ");
+                String location = "";
+                for (String attribute : attributes){
+                    if (attribute.split("=")[0].equals("location")){
+                        location = attribute.split("=")[1];
+                    }
+                }
+                try {
+                    String res = java.net.URLDecoder.decode(location, StandardCharsets.UTF_8.name());
+                    SharedPreferences sharedPreferences = getSharedPreferences("settings", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("location", res);
+                    editor.apply();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         saveBtn.setOnClickListener(view -> {
             String url = webView.getUrl();
@@ -54,20 +79,7 @@ public class SearchingSettingsActivity extends AppCompatActivity {
             finish();
         });
 
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(webView, url);
-                String cookies = CookieManager.getInstance().getCookie(url);
-                String location = cookies.split("; ")[1];
-                try {
-                    String res = java.net.URLDecoder.decode(location, StandardCharsets.UTF_8.name());
-                    String json = res.split("=")[1];
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+
 
     }
 
