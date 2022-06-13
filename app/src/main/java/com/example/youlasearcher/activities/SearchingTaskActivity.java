@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -26,20 +24,15 @@ import com.example.youlasearcher.R;
 import com.example.youlasearcher.interfaces.Changeable;
 import com.example.youlasearcher.interfaces.ChangeableTime;
 import com.example.youlasearcher.models.Modes;
-import com.example.youlasearcher.models.Search;
 import com.example.youlasearcher.models.dialogFragments.PeriodDialogFragment;
 import com.example.youlasearcher.models.dialogFragments.TimePickerDialogFragment;
-import com.example.youlasearcher.models.viewModels.Task;
-import com.example.youlasearcher.services.TimeParseService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.SneakyThrows;
 
 public class SearchingTaskActivity extends AppCompatActivity implements Changeable, ChangeableTime {
 
@@ -48,13 +41,13 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
     private ListView symbolsList;
     private EditText name;
     private FloatingActionButton saveButton;
+    private final static String FILE_NAME = "content.txt";
     private State period = new State("Периодичность поиска", "Каждые 5 минут", R.drawable.ic_refresh);
     private State timeModule = new State("Время работы поиска", "Круглосуточно", R.drawable.ic_schedule);
     private State options = new State("Параметры поиска", "Нажмите для настройки", R.drawable.ic_wrench);
     private State searchWeb = new State("Предварительные результаты", "Нажмите, чтобы посмотреть", R.drawable.ic_search);
     private State searchApp = new State("Предварительные результаты", "Внутри приложения", R.drawable.ic_search);
     private StateAdapter stateAdapter;
-    private ObjectMapper mapper;
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -76,20 +69,19 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
         setContentView(R.layout.activity_new_searching_task);
         name = findViewById(R.id.name);
         saveButton = findViewById(R.id.add_searching_btn);
-        mapper = new ObjectMapper();
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String time = period.getSubTitle();
                 String workTime = timeModule.getSubTitle();
                 String url = options.getSubTitle();
-                if (url.equals("Нажмите для настройки")){
+                if (url.equals("Нажмите для настройки")) {
                     Toast toast = Toast.makeText(view.getContext(), "Укажите параметры поиска!", Toast.LENGTH_LONG);
                     toast.show();
-                }else if(name.getText().toString().length() == 0){
+                } else if (name.getText().toString().length() == 0) {
                     Toast toast = Toast.makeText(view.getContext(), "Введите название поиска!", Toast.LENGTH_LONG);
                     toast.show();
-                } else{
+                } else {
                     Intent intent = new Intent(SearchingTaskActivity.this, NotificationService.class);
                     intent.putExtra("mode", Modes.CREATE);
                     intent.putExtra("name", name.getText().toString());
@@ -98,8 +90,10 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                     intent.putExtra("time", time);
 
                     startService(intent);
+                    String oldData = readData() == null ? "" : readData();
 
-                    // TODO: 13.06.2022 записать в json новый поиск
+                    String data = oldData + name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "\n";
+                    writeData(data);
                 }
             }
         });
@@ -145,7 +139,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                             if (options.getSubTitle().equals("Нажмите для настройки")) {
                                 Toast toast = Toast.makeText(SearchingTaskActivity.this, "Укажите параметры поиска!", Toast.LENGTH_LONG);
                                 toast.show();
-                            }else{
+                            } else {
                                 Intent advanceResultsIntent = new Intent(SearchingTaskActivity.this, AdvanceResultsActivity.class);
                                 advanceResultsIntent.putExtra("url", options.getSubTitle());
                                 startActivity(advanceResultsIntent);
@@ -169,7 +163,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.delete_searching_task) {
-            if (name.getText().toString().length() != 0 && !options.getSubTitle().equals("Нажмите для настройки")){
+            if (name.getText().toString().length() != 0 && !options.getSubTitle().equals("Нажмите для настройки")) {
                 Intent intent = new Intent(SearchingTaskActivity.this, NotificationService.class);
                 intent.putExtra("mode", Modes.DELETE);
                 intent.putExtra("name", name.getText().toString());
@@ -178,7 +172,19 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                 intent.putExtra("time", "");
 
                 startService(intent);
-                // TODO: 13.06.2022 удалить поиск из json
+
+                String content = readData();
+                String[] rows = content.split("\n");
+                String newContent = "";
+                for (String row : rows) {
+                    String[] elements = row.split("@");
+                    String i = elements[0];
+                    if (!i.equals(name.getText().toString()) && elements[1].equals(timeModule.getSubTitle()) && elements[2].equals(period.getSubTitle()) && elements[3].equals(options.getSubTitle())) {
+                        newContent += row + "\n";
+                    }
+                }
+                deleteFile(FILE_NAME);
+                writeData(newContent);
             }
             Intent mainActivity = new Intent(SearchingTaskActivity.this, MainActivity.class);
             startActivity(mainActivity);
@@ -209,6 +215,50 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
             timeModule.setSubTitle("С " + time[0] + " до " + time[1]);
         }
         stateAdapter.notifyDataSetChanged();
+    }
+
+    public void writeData(String data) {
+        FileOutputStream fos = null;
+        try {
+            fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            fos.write(data.getBytes());
+            Toast.makeText(this, "Файл сохранен", Toast.LENGTH_SHORT).show();
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (fos != null)
+                    fos.close();
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public String readData() {
+        FileInputStream fin = null;
+        try {
+            fin = openFileInput(FILE_NAME);
+            byte[] bytes = new byte[fin.available()];
+            fin.read(bytes);
+            return new String(bytes);
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        } finally {
+
+            try {
+                if (fin != null)
+                    fin.close();
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+            }
+        }
+        return null;
     }
 
 
