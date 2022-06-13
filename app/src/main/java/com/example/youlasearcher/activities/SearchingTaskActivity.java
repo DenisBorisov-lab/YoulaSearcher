@@ -94,6 +94,9 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
 
                     String data = oldData + name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "\n";
                     writeData(data);
+
+                    Intent mainActivity = new Intent(SearchingTaskActivity.this, MainActivity.class);
+                    startActivity(mainActivity);
                 }
             }
         });
@@ -222,7 +225,6 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
         try {
             fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
             fos.write(data.getBytes());
-            Toast.makeText(this, "Файл сохранен", Toast.LENGTH_SHORT).show();
         } catch (IOException ex) {
 
             ex.printStackTrace();
