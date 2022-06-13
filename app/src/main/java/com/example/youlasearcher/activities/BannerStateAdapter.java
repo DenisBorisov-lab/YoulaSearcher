@@ -49,4 +49,5 @@ public class BannerStateAdapter extends ArrayAdapter<BannerState> {
 
         return view;
     }
+
 }
