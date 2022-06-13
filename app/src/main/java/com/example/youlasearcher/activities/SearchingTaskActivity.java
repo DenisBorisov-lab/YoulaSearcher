@@ -21,17 +21,25 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youlasearcher.MainActivity;
+import com.example.youlasearcher.NotificationService;
 import com.example.youlasearcher.R;
 import com.example.youlasearcher.interfaces.Changeable;
 import com.example.youlasearcher.interfaces.ChangeableTime;
+import com.example.youlasearcher.models.Modes;
+import com.example.youlasearcher.models.Search;
 import com.example.youlasearcher.models.dialogFragments.PeriodDialogFragment;
 import com.example.youlasearcher.models.dialogFragments.TimePickerDialogFragment;
 import com.example.youlasearcher.models.viewModels.Task;
 import com.example.youlasearcher.services.TimeParseService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.SneakyThrows;
 
 public class SearchingTaskActivity extends AppCompatActivity implements Changeable, ChangeableTime {
 
@@ -46,6 +54,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
     private State searchWeb = new State("Предварительные результаты", "Нажмите, чтобы посмотреть", R.drawable.ic_search);
     private State searchApp = new State("Предварительные результаты", "Внутри приложения", R.drawable.ic_search);
     private StateAdapter stateAdapter;
+    private ObjectMapper mapper;
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -66,8 +75,8 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_searching_task);
         name = findViewById(R.id.name);
-        String taskTitle= name.getText().toString();
         saveButton = findViewById(R.id.add_searching_btn);
+        mapper = new ObjectMapper();
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,12 +86,20 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                 if (url.equals("Нажмите для настройки")){
                     Toast toast = Toast.makeText(view.getContext(), "Укажите параметры поиска!", Toast.LENGTH_LONG);
                     toast.show();
-                }else if(taskTitle.length() == 0){
+                }else if(name.getText().toString().length() == 0){
                     Toast toast = Toast.makeText(view.getContext(), "Введите название поиска!", Toast.LENGTH_LONG);
                     toast.show();
                 } else{
-                    Task task = new Task(TimeParseService.parseTimeFromStringToIntMinutes(time), workTime, url);
-                    // TODO: 05.06.2022 создать новый поиск
+                    Intent intent = new Intent(SearchingTaskActivity.this, NotificationService.class);
+                    intent.putExtra("mode", Modes.CREATE);
+                    intent.putExtra("name", name.getText().toString());
+                    intent.putExtra("url", url);
+                    intent.putExtra("workTime", workTime);
+                    intent.putExtra("time", time);
+
+                    startService(intent);
+
+                    // TODO: 13.06.2022 записать в json новый поиск
                 }
             }
         });
@@ -133,9 +150,6 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                                 advanceResultsIntent.putExtra("url", options.getSubTitle());
                                 startActivity(advanceResultsIntent);
                             }
-                            // TODO: 05.06.2022 предварительные результаты в приложении
-
-
                         }
                         break;
                 }
@@ -155,8 +169,19 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.delete_searching_task) {
-            // TODO: 05.06.2022 удалить автопоиск и вернуться на главную страницу
-            startActivity(new Intent(SearchingTaskActivity.this, MainActivity.class));
+            if (name.getText().toString().length() != 0 && !options.getSubTitle().equals("Нажмите для настройки")){
+                Intent intent = new Intent(SearchingTaskActivity.this, NotificationService.class);
+                intent.putExtra("mode", Modes.DELETE);
+                intent.putExtra("name", name.getText().toString());
+                intent.putExtra("url", "");
+                intent.putExtra("workTime", "");
+                intent.putExtra("time", "");
+
+                startService(intent);
+                // TODO: 13.06.2022 удалить поиск из json
+            }
+            Intent mainActivity = new Intent(SearchingTaskActivity.this, MainActivity.class);
+            startActivity(mainActivity);
             return true;
         }
         return super.onOptionsItemSelected(item);

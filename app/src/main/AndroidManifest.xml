@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.youlasearcher">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,6 +16,11 @@
         android:theme="@style/Theme.YoulaSearcher"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            android:exported="false"></service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -23,33 +31,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".BootBroadcast"
+            android:exported="true">
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".activities.HelpGuideActivity"
             android:label="Если не работает?"
             android:parentActivityName=".MainActivity" />
-
         <activity
             android:name=".activities.SearchingTaskActivity"
             android:label="Новый автопоиск"
             android:parentActivityName=".MainActivity" />
-
         <activity
             android:name=".activities.NotificationSettings"
             android:label="Настройки"
             android:parentActivityName=".MainActivity" />
-
         <activity
             android:name=".activities.SearchingSettingsActivity"
             android:label="Настройка автопоиска"
             android:parentActivityName=".activities.SearchingTaskActivity" />
-
         <activity
             android:name=".activities.AdvanceResultsActivity"
             android:label="Результат поиска"
-            android:parentActivityName=".activities.SearchingTaskActivity" />
+             />
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>
