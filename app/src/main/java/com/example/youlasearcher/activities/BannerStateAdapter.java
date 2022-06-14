@@ -1,11 +1,13 @@
 package com.example.youlasearcher.activities;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.SwitchCompat;
@@ -32,6 +34,7 @@ public class BannerStateAdapter extends ArrayAdapter<BannerState> {
         TextView periodTitle = view.findViewById(R.id.period_title);
         TextView scheduleTitle = view.findViewById(R.id.schedule_title);
         SwitchCompat switchCompat = view.findViewById(R.id.item_switch_compat);
+        LinearLayout layoutCd = view.findViewById(R.id.layout_cd);
 
         BannerState state = states.get(position);
 
@@ -45,6 +48,10 @@ public class BannerStateAdapter extends ArrayAdapter<BannerState> {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
             }
+        });
+
+        layoutCd.setOnClickListener(v -> {
+            switchCompat.setChecked(!switchCompat.isChecked());
         });
 
         return view;

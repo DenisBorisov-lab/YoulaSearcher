@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 ex.printStackTrace();
             }
         }
-        return null;
+        return "";
     }
     private void setInitialData(){
         String[] rows = readData().split("\n");

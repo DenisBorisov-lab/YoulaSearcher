@@ -48,7 +48,7 @@ public class NotificationService extends Service {
                     public void run() {
                         while (searching.contains(name)) {
                             // TODO: 13.06.2022 Логика для отправки запросов
-                            System.out.println(name);
+//                            System.out.println(name);
                         }
                         System.out.println("Цикл остановлен");
                     }
