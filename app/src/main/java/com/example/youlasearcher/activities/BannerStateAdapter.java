@@ -1,6 +1,7 @@
 package com.example.youlasearcher.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.youlasearcher.MainActivity;
 import com.example.youlasearcher.R;
 
 import java.util.List;
@@ -30,6 +33,7 @@ public class BannerStateAdapter extends ArrayAdapter<BannerState> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = inflater.inflate(this.layout, parent, false);
+
         TextView title = view.findViewById(R.id.item_title);
         TextView periodTitle = view.findViewById(R.id.period_title);
         TextView scheduleTitle = view.findViewById(R.id.schedule_title);
@@ -51,7 +55,8 @@ public class BannerStateAdapter extends ArrayAdapter<BannerState> {
         });
 
         layoutCd.setOnClickListener(v -> {
-            switchCompat.setChecked(!switchCompat.isChecked());
+            Intent intent = new Intent(getContext(), SearchingTaskActivity.class);
+            view.getContext().startActivity(intent);
         });
 
         return view;
