@@ -10,6 +10,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youlasearcher.R;
+import com.example.youlasearcher.interfaces.Changeable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,6 @@ public class NotificationSettings extends AppCompatActivity {
     private SettingsState ringtone = new SettingsState("Рингтон", "По умолчанию (Неизвестная мелодия)", false);
     private SettingsState vibration = new SettingsState("Вибрация", "Вибрация при получении уведомлений", true);
     private SettingsState wifiSearching = new SettingsState("Искать только по Wi-Fi", "Поиск осуществляется только при подулючении к Wi-Fi", false);
-    private SettingsState openingWay = new SettingsState("Способ открытия уведомлений", "В какой программе будут открываться найденные уведомления", false);
 
 
     @Override
@@ -51,7 +51,6 @@ public class NotificationSettings extends AppCompatActivity {
         states.add(ringtone);
         states.add(vibration);
         states.add(wifiSearching);
-        states.add(openingWay);
     }
 
     @Override

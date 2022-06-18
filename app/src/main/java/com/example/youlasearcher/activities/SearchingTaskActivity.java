@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SearchingTaskActivity extends AppCompatActivity implements Changeable, ChangeableTime {
 
@@ -42,11 +43,12 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
     private EditText name;
     private FloatingActionButton saveButton;
     private final static String FILE_NAME = "content.txt";
-    private State period = new State("Периодичность поиска", "Каждые 5 минут", R.drawable.ic_refresh);
-    private State timeModule = new State("Время работы поиска", "Круглосуточно", R.drawable.ic_schedule);
-    private State options = new State("Параметры поиска", "Нажмите для настройки", R.drawable.ic_wrench);
-    private State searchWeb = new State("Предварительные результаты", "Нажмите, чтобы посмотреть", R.drawable.ic_search);
-    private State searchApp = new State("Предварительные результаты", "Внутри приложения", R.drawable.ic_search);
+    private State period;
+    private State timeModule;
+    private State options;
+    private State searchWeb;
+    private State searchApp;
+    private String[] uuid;
     private StateAdapter stateAdapter;
     ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -68,6 +70,20 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_searching_task);
         name = findViewById(R.id.name);
+        Bundle extras = getIntent().getExtras();
+        String title = extras.getString("name");
+        String url = extras.getString("url");
+        String periodTime = extras.getString("period");
+        String schedule = extras.getString("schedule");
+        uuid = new String[]{extras.getString("id")};
+
+        name.setText(title);
+        period = new State("Периодичность поиска", periodTime, R.drawable.ic_refresh);
+        timeModule = new State("Время работы поиска", schedule, R.drawable.ic_schedule);
+        options = new State("Параметры поиска", url, R.drawable.ic_wrench);
+        searchApp = new State("Предварительные результаты", "Внутри приложения", R.drawable.ic_search);
+        searchWeb = new State("Предварительные результаты", "Нажмите, чтобы посмотреть", R.drawable.ic_search);
+
         saveButton = findViewById(R.id.add_searching_btn);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,17 +98,38 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                     Toast toast = Toast.makeText(view.getContext(), "Введите название поиска!", Toast.LENGTH_LONG);
                     toast.show();
                 } else {
+
+                    String oldData = readData() == null ? "" : readData();
+                    String data = "";
+                    boolean isExist = false;
+                    if (oldData.length() != 0) {
+                        for (String row : oldData.split("\n")) {
+                            String[] elements = row.split("@");
+                            if (elements[4].equals(uuid[0])) {
+                                isExist = true;
+                                String newRow = name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + uuid[0] + "\n";
+                                data += newRow;
+
+                                // TODO: 17.06.2022 переписать старый
+                            } else {
+                                data += row + "\n";
+                            }
+                        }
+                    }
+
+                    if (!isExist) {
+                        uuid[0] = UUID.randomUUID().toString();
+                        data = oldData + name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + uuid[0] + "\n";
+                    }
                     Intent intent = new Intent(SearchingTaskActivity.this, NotificationService.class);
                     intent.putExtra("mode", Modes.CREATE);
                     intent.putExtra("name", name.getText().toString());
                     intent.putExtra("url", url);
                     intent.putExtra("workTime", workTime);
                     intent.putExtra("time", time);
+                    intent.putExtra("id", uuid[0]);
 
                     startService(intent);
-                    String oldData = readData() == null ? "" : readData();
-
-                    String data = oldData + name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "\n";
                     writeData(data);
 
                     Intent mainActivity = new Intent(SearchingTaskActivity.this, MainActivity.class);
@@ -181,8 +218,8 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                 String newContent = "";
                 for (String row : rows) {
                     String[] elements = row.split("@");
-                    String i = elements[0];
-                    if (!i.equals(name.getText().toString()) && elements[1].equals(timeModule.getSubTitle()) && elements[2].equals(period.getSubTitle()) && elements[3].equals(options.getSubTitle())) {
+                    String i = elements[4];
+                    if (!i.equals(uuid[0])) {
                         newContent += row + "\n";
                     }
                 }

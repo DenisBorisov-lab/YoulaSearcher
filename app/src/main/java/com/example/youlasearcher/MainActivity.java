@@ -1,5 +1,7 @@
 package com.example.youlasearcher;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.example.youlasearcher.activities.BannerState;
 import com.example.youlasearcher.activities.BannerStateAdapter;
@@ -31,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private final static String FILE_NAME = "content.txt";
     private List<BannerState> states;
+    private final int NOTIFY_ID = 101;
+
+    // Идентификатор канала
+    private String CHANNEL_ID = "new item";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +53,6 @@ public class MainActivity extends AppCompatActivity {
             setInitialData();
             BannerStateAdapter adapter = new BannerStateAdapter(this, R.layout.activity_main_list_item, states);
             listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    State selectedState = (State) adapterView.getItemAtPosition(i);
-                    System.out.println("Кнопка нажата");
-                }
-            });
-
-
         }
 
 
@@ -68,7 +67,13 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton addSearchingBtn = findViewById(R.id.add_searching_btn);
 
         addSearchingBtn.setOnClickListener(view -> {
-            startActivity(new Intent(MainActivity.this, SearchingTaskActivity.class));
+            Intent intent = new Intent(MainActivity.this, SearchingTaskActivity.class);
+            intent.putExtra("name", "");
+            intent.putExtra("period", "Каждые 5 минут");
+            intent.putExtra("schedule", "Круглосуточно");
+            intent.putExtra("url", "Нажмите для настройки");
+            intent.putExtra("id", "");
+            startActivity(intent);
         });
     }
 
@@ -140,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
                 String schedule = elements[1];
                 String period = elements[2];
                 String url = elements[3];
-                states.add(new BannerState(name, schedule, period, url));
+                String id = elements[4];
+                states.add(new BannerState(name, schedule, period, url, id));
             }
         }
     }

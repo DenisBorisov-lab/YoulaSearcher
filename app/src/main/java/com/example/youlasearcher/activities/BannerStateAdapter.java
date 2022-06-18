@@ -50,12 +50,21 @@ public class BannerStateAdapter extends ArrayAdapter<BannerState> {
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
+                if (b){
+                    // TODO: 18.06.2022 запустить сервис
+                }else{
+                    // TODO: 18.06.2022 остановить сервис
+                }
             }
         });
 
         layoutCd.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), SearchingTaskActivity.class);
+            intent.putExtra("name", state.getTitle());
+            intent.putExtra("period", state.getPeriodSubTitle());
+            intent.putExtra("schedule", state.getWorkSubTitle());
+            intent.putExtra("url", state.getUrl());
+            intent.putExtra("id", state.getId());
             view.getContext().startActivity(intent);
         });
 

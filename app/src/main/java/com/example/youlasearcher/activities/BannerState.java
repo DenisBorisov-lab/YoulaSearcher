@@ -12,4 +12,5 @@ public class BannerState {
     private String workSubTitle;
     private String periodSubTitle;
     private String url;
+    private String id;
 }
