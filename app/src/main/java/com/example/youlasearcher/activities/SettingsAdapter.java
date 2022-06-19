@@ -1,7 +1,13 @@
 package com.example.youlasearcher.activities;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +28,11 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
     private List<SettingsState> states;
     private int layout;
     private LayoutInflater inflater;
+    private Context mContext;
 
     public SettingsAdapter(Context context, int resource, List<SettingsState> states) {
         super(context, resource, states);
+        mContext = context;
         this.states = states;
         this.layout = resource;
         this.inflater = LayoutInflater.from(context);
@@ -42,7 +50,7 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
         SettingsState state = states.get(position);
 
         SharedPreferences settings = getContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
-        if (!settings.contains("vibration")){
+        if (!settings.contains("vibration")) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putBoolean("vibration", true);
             editor.putBoolean("wifi", false);
@@ -58,6 +66,8 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
         } else if (state.getTitle().equals("Искать только по Wi-Fi")) {
             switchCompat.setTag("wifi_searching");
             layoutCc.setTag("wifi_layout");
+        } else {
+            layoutCc.setTag("ringtone");
         }
 
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -87,7 +97,12 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
                 switchCompat.setChecked(!switchCompat.isChecked());
                 setVibration(switchCompat.isChecked());
             } else {
-                Log.w("SettingsAdapter", "Неизвестный тег 1");
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Выбрать рингтон");
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
+                ((Activity) mContext).startActivityForResult(intent, 5);
+
             }
         });
 
@@ -114,4 +129,12 @@ public class SettingsAdapter extends ArrayAdapter<SettingsState> {
         editor.apply();
         System.out.println(val);
     }
+
+//    public  void onActivityResult(int requestCode, int resultCode, Intent intent) {
+//        if (resultCode == Activity.RESULT_OK && requestCode == 5) {
+//            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+//
+//        }
+//    }
+
 }

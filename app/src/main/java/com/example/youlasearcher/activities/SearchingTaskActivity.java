@@ -75,6 +75,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
         String url = extras.getString("url");
         String periodTime = extras.getString("period");
         String schedule = extras.getString("schedule");
+        String activeString = extras.getString("active");
         uuid = new String[]{extras.getString("id")};
 
         name.setText(title);
@@ -107,10 +108,8 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                             String[] elements = row.split("@");
                             if (elements[4].equals(uuid[0])) {
                                 isExist = true;
-                                String newRow = name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + uuid[0] + "\n";
+                                String newRow = name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + uuid[0] + "@" + activeString + "\n";
                                 data += newRow;
-
-                                // TODO: 17.06.2022 переписать старый
                             } else {
                                 data += row + "\n";
                             }
@@ -119,7 +118,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
 
                     if (!isExist) {
                         uuid[0] = UUID.randomUUID().toString();
-                        data = oldData + name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + uuid[0] + "\n";
+                        data = oldData + name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + uuid[0] + "@" + activeString + "\n";
                     }
                     Intent intent = new Intent(SearchingTaskActivity.this, NotificationService.class);
                     intent.putExtra("mode", Modes.CREATE);
@@ -128,6 +127,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                     intent.putExtra("workTime", workTime);
                     intent.putExtra("time", time);
                     intent.putExtra("id", uuid[0]);
+                    intent.putExtra("active", activeString);
 
                     startService(intent);
                     writeData(data);

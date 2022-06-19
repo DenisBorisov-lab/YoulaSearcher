@@ -13,4 +13,5 @@ public class BannerState {
     private String periodSubTitle;
     private String url;
     private String id;
+    private boolean active;
 }

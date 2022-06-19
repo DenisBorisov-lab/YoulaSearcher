@@ -1,8 +1,8 @@
 package com.example.youlasearcher;
 
+import static androidx.core.app.NotificationCompat.DEFAULT_ALL;
 import static androidx.core.app.NotificationCompat.PRIORITY_HIGH;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,7 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.icu.text.CaseMap;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -48,7 +48,7 @@ public class NotificationService extends Service {
     private DataService dataService;
     private PostService postService;
     private NotificationManager notificationManager;
-    private static final String CHANNEL_ID="CHANNEL_ID";
+    private static final String CHANNEL_ID = "CHANNEL_ID";
     private int NOTIFY_ID = 1;
     private SharedPreferences sharedPreferences;
     private boolean vibration;
@@ -81,6 +81,7 @@ public class NotificationService extends Service {
         String workTime = extras.getString("workTime");
         String time = extras.getString("time");
         String id = extras.getString("id");
+        String active = extras.getString("active");
         String[] array = url.split("\\?");
         String attributes = "";
         String domain = array[0];
@@ -94,15 +95,21 @@ public class NotificationService extends Service {
         postService = new PostServiceImpl(model);
         if (mode == Modes.CREATE) {
             if (searching.contains(id)) {
-
-            } else {
+                // TODO: 19.06.2022 изменить поиск и стартануть его заново
+                searching.remove(id);
+                try {
+                    Thread.sleep(1000 / 4);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 searching.add(id);
                 new Thread(() -> {
+                    System.out.println("Цикл был изменён и запущен заново");
                     String stringObjects = postService.post();
                     YoulaResponse objects = dataService.getResultedObject(stringObjects);
                     Item[] items = objects.getData().getFeed().getItems();
                     long period = PeriodTimeService.getMilliseconds(time);
-                    while (searching.contains(id)) {
+                    while (searching.contains(id) && active.equals("true")) {
                         boolean isConnected = isConnectedViaWifi();
                         if (TimeParseService.isAvailableForTime(workTime) && (!wifiSearching || wifiSearching == isConnected)) {
                             System.out.println("Цикл запущен");
@@ -117,7 +124,7 @@ public class NotificationService extends Service {
                             List<Item> pushItems = getDifferentItems(items, anotherItems);
                             items = anotherItems;
 
-                            for (Item item : pushItems){
+                            for (Item item : pushItems) {
                                 sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL());
                                 try {
                                     Thread.sleep(500);
@@ -127,7 +134,46 @@ public class NotificationService extends Service {
                             }
                         }
                     }
+
                 }).start();
+
+            } else {
+                searching.add(id);
+                new Thread(() -> {
+                    String stringObjects = postService.post();
+                    YoulaResponse objects = dataService.getResultedObject(stringObjects);
+                    Item[] items = objects.getData().getFeed().getItems();
+                    long period = PeriodTimeService.getMilliseconds(time);
+                    while (searching.contains(id) && active.equals("true")) {
+                        boolean isConnected = isConnectedViaWifi();
+                        if (TimeParseService.isAvailableForTime(workTime) && (!wifiSearching || wifiSearching == isConnected)) {
+                            System.out.println("Цикл запущен");
+                            try {
+                                Thread.sleep(period);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            String anotherStringObjects = postService.post();
+                            YoulaResponse anotherObjects = dataService.getResultedObject(anotherStringObjects);
+                            Item[] anotherItems = anotherObjects.getData().getFeed().getItems();
+                            List<Item> pushItems = getDifferentItems(items, anotherItems);
+                            items = anotherItems;
+
+                            for (Item item : pushItems) {
+                                if (searching.contains(id)){
+                                    sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL());
+                                }
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                    System.out.println("Цикл остановлен");
+                }).start();
+
             }
 
         } else {
@@ -177,21 +223,21 @@ public class NotificationService extends Service {
 
     // TODO: 18.06.2022 поставить иконку приложения
     // TODO: 18.06.2022 установить рингтон
-    public void sendNotification(String title, String price, String url, String link){
+    public void sendNotification(String title, String price, String url, String link) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youla.ru" + link));
         PendingIntent contentIntent = PendingIntent.getActivity(NotificationService.this,
                 0, browserIntent,
                 PendingIntent.FLAG_CANCEL_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setLargeIcon(getBitmapFromURl(url))
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.ic_search)
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(title)
                 .setContentText(price)
                 .setContentIntent(contentIntent)
                 .setPriority(PRIORITY_HIGH);
-        if (vibration){
-            notificationBuilder.setVibrate(new long[] {1000, 1000});
+        if (vibration) {
+            notificationBuilder.setVibrate(new long[]{1000, 1000});
         }
 
         createChannelIfNeeded(notificationManager);
@@ -213,10 +259,10 @@ public class NotificationService extends Service {
     }
 
     @SneakyThrows
-    public Bitmap getBitmapFromURl(String link){
+    public Bitmap getBitmapFromURl(String link) {
         InputStream in;
         URL url = new URL(link);
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.connect();
         in = connection.getInputStream();

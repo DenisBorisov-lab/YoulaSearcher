@@ -44,7 +44,7 @@ public class AdvanceResultsActivity extends AppCompatActivity {
         Bundle arguments = getIntent().getExtras();
         SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
         location = settings.getString("location", null);
-        url = arguments.get("url").toString();
+        url = "https://youla.ru/moskva/hobbi-razvlecheniya/konsoli-igry";
         products = findViewById(R.id.preview_list);
         states = new ArrayList<>();
 
@@ -65,6 +65,9 @@ public class AdvanceResultsActivity extends AppCompatActivity {
                 String stringObjects = postService.post();
                 YoulaResponse objects = dataService.getResultedObject(stringObjects);
                 Item[] items = objects.getData().getFeed().getItems();
+                if (items.length == 1){
+                    return;
+                }
                 for(Item item : items){
                     if (item.getProduct() != null){
                         Product product = item.getProduct();

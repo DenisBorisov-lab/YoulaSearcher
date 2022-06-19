@@ -1,31 +1,26 @@
 package com.example.youlasearcher;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.example.youlasearcher.activities.BannerState;
 import com.example.youlasearcher.activities.BannerStateAdapter;
 import com.example.youlasearcher.activities.HelpGuideActivity;
 import com.example.youlasearcher.activities.NotificationSettings;
 import com.example.youlasearcher.activities.SearchingTaskActivity;
-import com.example.youlasearcher.activities.State;
+import com.example.youlasearcher.models.Modes;
 import com.example.youlasearcher.models.dialogFragments.GuideDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,29 +30,26 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private final static String FILE_NAME = "content.txt";
     private List<BannerState> states;
-    private final int NOTIFY_ID = 101;
-
-    // Идентификатор канала
-    private String CHANNEL_ID = "new item";
+    private BannerStateAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String[] array = readData().split("\n");
-        if (array.length == 0 || array[0].equals("")){
+        if (array.length == 0 || array[0].equals("")) {
             setContentView(R.layout.activity_main);
-        }else{
+        } else {
             setContentView(R.layout.activity_main_list_view);
             ListView listView = findViewById(R.id.searching_list);
             states = new ArrayList<>();
             setInitialData();
-            BannerStateAdapter adapter = new BannerStateAdapter(this, R.layout.activity_main_list_item, states);
+            adapter = new BannerStateAdapter(this, R.layout.activity_main_list_item, states);
             listView.setAdapter(adapter);
         }
 
 
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        if (!sharedPreferences.contains("vibration")){
+        if (!sharedPreferences.contains("vibration")) {
             SharedPreferences.Editor edit = sharedPreferences.edit();
             edit.putBoolean("vibration", true);
             edit.putBoolean("wifi_searching", false);
@@ -73,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("schedule", "Круглосуточно");
             intent.putExtra("url", "Нажмите для настройки");
             intent.putExtra("id", "");
+            intent.putExtra("active", "true");
             startActivity(intent);
         });
     }
@@ -88,10 +81,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.stop_searching:
-                // логика остановки поиска
+                stopSearching();
+                // TODO: 19.06.2022 остановить поиски
                 return true;
             case R.id.recreate_searching:
-                // пересоздать поиски
+                startSearching();
+                // TODO: 19.06.2022 пересоздать поиски
                 return true;
             case R.id.help:
                 // помощь
@@ -136,18 +131,102 @@ public class MainActivity extends AppCompatActivity {
         }
         return "";
     }
-    private void setInitialData(){
+
+    private void setInitialData() {
         String[] rows = readData().split("\n");
-        for (String row : rows){
-            if (row.length() != 0){
+        for (String row : rows) {
+            if (row.length() != 0) {
                 String[] elements = row.split("@");
                 String name = elements[0];
                 String schedule = elements[1];
                 String period = elements[2];
                 String url = elements[3];
                 String id = elements[4];
-                states.add(new BannerState(name, schedule, period, url, id));
+                String activeString = elements[5];
+                boolean active = true;
+                if (activeString.equals("false")) {
+                    active = false;
+                }
+                states.add(new BannerState(name, schedule, period, url, id, active));
             }
         }
     }
+
+    private void stopSearching() {
+        for (BannerState state : states) {
+            state.setActive(false);
+            setActive(state);
+            Intent serviceIntent = new Intent(MainActivity.this, NotificationService.class);
+
+            serviceIntent.putExtra("mode", Modes.DELETE);
+            serviceIntent.putExtra("name", state.getTitle());
+            serviceIntent.putExtra("url", state.getUrl());
+            serviceIntent.putExtra("workTime", state.getWorkSubTitle());
+            serviceIntent.putExtra("time", state.getPeriodSubTitle());
+            serviceIntent.putExtra("id", state.getId());
+            serviceIntent.putExtra("active", state.isActive() ? "true" : "false");
+            startService(serviceIntent);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    public void setActive(BannerState state) {
+        String oldData = readData() == null ? "" : readData();
+        String data = "";
+        String activeString = "true";
+        if (!state.isActive()) {
+            activeString = "false";
+        }
+        if (oldData.length() != 0) {
+            for (String row : oldData.split("\n")) {
+                String[] elements = row.split("@");
+                if (elements[4].equals(state.getId())) {
+                    String newRow = state.getTitle() + "@" + state.getWorkSubTitle() + "@" + state.getPeriodSubTitle() + "@" + state.getUrl() + "@" + state.getId() + "@" + activeString + "\n";
+                    data += newRow;
+                } else {
+                    data += row + "\n";
+                }
+            }
+        }
+        writeData(data);
+
+    }
+
+    public void writeData(String data) {
+        FileOutputStream fos = null;
+        try {
+            fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            fos.write(data.getBytes());
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (fos != null)
+                    fos.close();
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void startSearching(){
+        for (BannerState state : states) {
+            state.setActive(true);
+            setActive(state);
+            Intent serviceIntent = new Intent(MainActivity.this, NotificationService.class);
+
+            serviceIntent.putExtra("mode", Modes.CREATE);
+            serviceIntent.putExtra("name", state.getTitle());
+            serviceIntent.putExtra("url", state.getUrl());
+            serviceIntent.putExtra("workTime", state.getWorkSubTitle());
+            serviceIntent.putExtra("time", state.getPeriodSubTitle());
+            serviceIntent.putExtra("id", state.getId());
+            serviceIntent.putExtra("active", state.isActive() ? "true" : "false");
+            startService(serviceIntent);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
 }
