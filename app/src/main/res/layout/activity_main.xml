@@ -9,8 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="140dp"
@@ -44,9 +44,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
         android:contentDescription="@string/extended_fab_label"
         app:fabSize="normal"
-        app:srcCompat="@drawable/ic_plus"
-        android:layout_marginBottom="30dp"/>
+        app:srcCompat="@drawable/ic_plus" />
 
 </LinearLayout>

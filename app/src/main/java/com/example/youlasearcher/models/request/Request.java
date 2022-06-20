@@ -1,6 +1,6 @@
 package com.example.youlasearcher.models.request;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Request {
     private String operationName;
@@ -8,17 +8,32 @@ public class Request {
     private Extensions extensions;
 
     @JsonProperty("operationName")
-    public String getOperationName() { return operationName; }
+    public String getOperationName() {
+        return operationName;
+    }
+
     @JsonProperty("operationName")
-    public void setOperationName(String value) { this.operationName = value; }
+    public void setOperationName(String value) {
+        this.operationName = value;
+    }
 
     @JsonProperty("variables")
-    public Variables getVariables() { return variables; }
+    public Variables getVariables() {
+        return variables;
+    }
+
     @JsonProperty("variables")
-    public void setVariables(Variables value) { this.variables = value; }
+    public void setVariables(Variables value) {
+        this.variables = value;
+    }
 
     @JsonProperty("extensions")
-    public Extensions getExtensions() { return extensions; }
+    public Extensions getExtensions() {
+        return extensions;
+    }
+
     @JsonProperty("extensions")
-    public void setExtensions(Extensions value) { this.extensions = value; }
+    public void setExtensions(Extensions value) {
+        this.extensions = value;
+    }
 }

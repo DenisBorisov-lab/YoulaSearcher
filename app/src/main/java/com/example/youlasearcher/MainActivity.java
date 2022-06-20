@@ -27,8 +27,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SharedPreferences sharedPreferences;
     private final static String FILE_NAME = "content.txt";
+    private SharedPreferences sharedPreferences;
     private List<BannerState> states;
     private BannerStateAdapter adapter;
 
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startSearching(){
+    private void startSearching() {
         for (BannerState state : states) {
             state.setActive(true);
             setActive(state);

@@ -1,6 +1,6 @@
 package com.example.youlasearcher.models.request;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Variables {
     private String sort;
@@ -11,32 +11,62 @@ public class Variables {
     private String cursor;
 
     @JsonProperty("sort")
-    public String getSort() { return sort; }
+    public String getSort() {
+        return sort;
+    }
+
     @JsonProperty("sort")
-    public void setSort(String value) { this.sort = value; }
+    public void setSort(String value) {
+        this.sort = value;
+    }
 
     @JsonProperty("attributes")
-    public Attribute[] getAttributes() { return attributes; }
+    public Attribute[] getAttributes() {
+        return attributes;
+    }
+
     @JsonProperty("attributes")
-    public void setAttributes(Attribute[] value) { this.attributes = value; }
+    public void setAttributes(Attribute[] value) {
+        this.attributes = value;
+    }
 
     @JsonProperty("datePublished")
-    public DatePublished getDatePublished() { return datePublished; }
+    public DatePublished getDatePublished() {
+        return datePublished;
+    }
+
     @JsonProperty("datePublished")
-    public void setDatePublished(DatePublished value) { this.datePublished = value; }
+    public void setDatePublished(DatePublished value) {
+        this.datePublished = value;
+    }
 
     @JsonProperty("location")
-    public Location getLocation() { return location; }
+    public Location getLocation() {
+        return location;
+    }
+
     @JsonProperty("location")
-    public void setLocation(Location value) { this.location = value; }
+    public void setLocation(Location value) {
+        this.location = value;
+    }
 
     @JsonProperty("search")
-    public String getSearch() { return search; }
+    public String getSearch() {
+        return search;
+    }
+
     @JsonProperty("search")
-    public void setSearch(String value) { this.search = value; }
+    public void setSearch(String value) {
+        this.search = value;
+    }
 
     @JsonProperty("cursor")
-    public String getCursor() { return cursor; }
+    public String getCursor() {
+        return cursor;
+    }
+
     @JsonProperty("cursor")
-    public void setCursor(String value) { this.cursor = value; }
+    public void setCursor(String value) {
+        this.cursor = value;
+    }
 }

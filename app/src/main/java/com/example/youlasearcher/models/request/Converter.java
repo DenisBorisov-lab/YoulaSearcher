@@ -1,49 +1,77 @@
+// To use this code, add the following Maven dependency to your project:
+//
+//
+//     com.fasterxml.jackson.core     : jackson-databind          : 2.9.0
+//
+//
+// Import this package:
+//
+//     import com.example.youlasearcher.models.request.Converter;
+//
+// Then you can deserialize a JSON string with
+//
+//     Request data = Converter.fromJsonString(jsonString);
+
 package com.example.youlasearcher.models.request;
 
-import java.io.IOException;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Converter {
     // Date-time helpers
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .appendOptional(DateTimeFormatter.ISO_DATE_TIME)
-            .appendOptional(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-            .appendOptional(DateTimeFormatter.ISO_INSTANT)
-            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SX"))
-            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX"))
-            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-            .toFormatter()
-            .withZone(ZoneOffset.UTC);
+    private static final String[] DATE_TIME_FORMATS = {
+            "yyyy-MM-dd'T'HH:mm:ss.SX",
+            "yyyy-MM-dd'T'HH:mm:ss.S",
+            "yyyy-MM-dd'T'HH:mm:ssX",
+            "yyyy-MM-dd'T'HH:mm:ss",
+            "yyyy-MM-dd HH:mm:ss.SX",
+            "yyyy-MM-dd HH:mm:ss.S",
+            "yyyy-MM-dd HH:mm:ssX",
+            "yyyy-MM-dd HH:mm:ss",
+            "HH:mm:ss.SZ",
+            "HH:mm:ss.S",
+            "HH:mm:ssZ",
+            "HH:mm:ss",
+            "yyyy-MM-dd",
+    };
+    private static ObjectReader reader;
+    private static ObjectWriter writer;
 
-    public static OffsetDateTime parseDateTimeString(String str) {
-        return ZonedDateTime.from(Converter.DATE_TIME_FORMATTER.parse(str)).toOffsetDateTime();
+    public static Date parseAllDateTimeString(String str) {
+        for (String format : DATE_TIME_FORMATS) {
+            try {
+                return new SimpleDateFormat(format).parse(str);
+            } catch (Exception ex) {
+                // Ignored
+            }
+        }
+        return null;
     }
 
-    private static final DateTimeFormatter TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .appendOptional(DateTimeFormatter.ISO_TIME)
-            .appendOptional(DateTimeFormatter.ISO_OFFSET_TIME)
-            .parseDefaulting(ChronoField.YEAR, 2020)
-            .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
-            .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
-            .toFormatter()
-            .withZone(ZoneOffset.UTC);
-
-    public static OffsetTime parseTimeString(String str) {
-        return ZonedDateTime.from(Converter.TIME_FORMATTER.parse(str)).toOffsetDateTime().toOffsetTime();
+    public static String serializeDateTime(Date datetime) {
+        return new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ").format(datetime);
     }
     // Serialize/deserialize helpers
+
+    public static String serializeDate(Date datetime) {
+        return new SimpleDateFormat("yyyy-MM-dd").format(datetime);
+    }
+
+    public static String serializeTime(Date datetime) {
+        return new SimpleDateFormat("hh:mm:ssZ").format(datetime);
+    }
 
     public static Request fromJsonString(String json) throws IOException {
         return getObjectReader().readValue(json);
@@ -53,19 +81,30 @@ public class Converter {
         return getObjectWriter().writeValueAsString(obj);
     }
 
-    private static ObjectReader reader;
-    private static ObjectWriter writer;
-
     private static void instantiateMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         SimpleModule module = new SimpleModule();
-        module.addDeserializer(OffsetDateTime.class, new JsonDeserializer<OffsetDateTime>() {
+        module.addDeserializer(Date.class, new JsonDeserializer<Date>() {
             @Override
-            public OffsetDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+            public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
                 String value = jsonParser.getText();
-                return Converter.parseDateTimeString(value);
+                return Converter.parseAllDateTimeString(value);
+            }
+        });
+        module.addDeserializer(Date.class, new JsonDeserializer<Date>() {
+            @Override
+            public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                String value = jsonParser.getText();
+                return Converter.parseAllDateTimeString(value);
+            }
+        });
+        module.addDeserializer(Date.class, new JsonDeserializer<Date>() {
+            @Override
+            public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                String value = jsonParser.getText();
+                return Converter.parseAllDateTimeString(value);
             }
         });
         mapper.registerModule(module);

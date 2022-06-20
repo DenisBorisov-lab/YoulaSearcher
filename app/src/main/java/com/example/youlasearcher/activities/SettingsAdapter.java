@@ -1,7 +1,5 @@
 package com.example.youlasearcher.activities;
 
-import static androidx.core.app.ActivityCompat.startActivityForResult;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

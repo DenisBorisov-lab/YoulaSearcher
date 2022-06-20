@@ -11,15 +11,11 @@ import com.example.youlasearcher.models.request.Variables;
 import com.example.youlasearcher.models.response.YoulaResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import lombok.SneakyThrows;
 
@@ -35,7 +31,6 @@ public class DataService {
         this.attributes = attributes.split("&");
         this.json = json;
         mapper = JsonMapper.builder()
-                .addModule(new JavaTimeModule())
                 .build();
     }
 
@@ -117,7 +112,7 @@ public class DataService {
 
     private String getSearch() {
         String value = "";
-        if (attributes[0].equals("")){
+        if (attributes[0].equals("")) {
             return value;
         }
         for (String attribute : attributes) {

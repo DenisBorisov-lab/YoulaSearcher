@@ -1,11 +1,16 @@
 package com.example.youlasearcher.models.location;
 
-import java.io.IOException;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
@@ -24,11 +29,6 @@ public class Converter {
             .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
             .toFormatter()
             .withZone(ZoneOffset.UTC);
-
-    public static OffsetDateTime parseDateTimeString(String str) {
-        return ZonedDateTime.from(Converter.DATE_TIME_FORMATTER.parse(str)).toOffsetDateTime();
-    }
-
     private static final DateTimeFormatter TIME_FORMATTER = new DateTimeFormatterBuilder()
             .appendOptional(DateTimeFormatter.ISO_TIME)
             .appendOptional(DateTimeFormatter.ISO_OFFSET_TIME)
@@ -37,11 +37,17 @@ public class Converter {
             .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
             .toFormatter()
             .withZone(ZoneOffset.UTC);
+    private static ObjectReader reader;
+    private static ObjectWriter writer;
+    // Serialize/deserialize helpers
+
+    public static OffsetDateTime parseDateTimeString(String str) {
+        return ZonedDateTime.from(Converter.DATE_TIME_FORMATTER.parse(str)).toOffsetDateTime();
+    }
 
     public static OffsetTime parseTimeString(String str) {
         return ZonedDateTime.from(Converter.TIME_FORMATTER.parse(str)).toOffsetDateTime().toOffsetTime();
     }
-    // Serialize/deserialize helpers
 
     public static LocationModel fromJsonString(String json) throws IOException {
         return getObjectReader().readValue(json);
@@ -50,9 +56,6 @@ public class Converter {
     public static String toJsonString(LocationModel obj) throws JsonProcessingException {
         return getObjectWriter().writeValueAsString(obj);
     }
-
-    private static ObjectReader reader;
-    private static ObjectWriter writer;
 
     private static void instantiateMapper() {
         ObjectMapper mapper = new ObjectMapper();

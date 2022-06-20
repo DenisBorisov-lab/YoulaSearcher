@@ -11,7 +11,6 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
 
 import com.example.youlasearcher.R;
 import com.example.youlasearcher.models.request.Request;
@@ -43,7 +42,7 @@ public class AdvanceResultsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         Bundle arguments = getIntent().getExtras();
         SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
-        location = settings.getString("location", null);
+        location = settings.getString("location", "");
         url = "https://youla.ru/moskva/hobbi-razvlecheniya/konsoli-igry";
         products = findViewById(R.id.preview_list);
         states = new ArrayList<>();
@@ -52,7 +51,7 @@ public class AdvanceResultsActivity extends AppCompatActivity {
         String[] array = url.split("\\?");
         String attributes = "";
         String domain = array[0];
-        if (array.length > 1){
+        if (array.length > 1) {
             attributes = array[1];
         }
         dataService = new DataService(domain, attributes, location);
@@ -65,11 +64,11 @@ public class AdvanceResultsActivity extends AppCompatActivity {
                 String stringObjects = postService.post();
                 YoulaResponse objects = dataService.getResultedObject(stringObjects);
                 Item[] items = objects.getData().getFeed().getItems();
-                if (items.length == 1){
+                if (items.length == 1) {
                     return;
                 }
-                for(Item item : items){
-                    if (item.getProduct() != null){
+                for (Item item : items) {
+                    if (item.getProduct() != null) {
                         Product product = item.getProduct();
                         String productURL = product.getURL();
                         states.add(new PreviewState(product.getName(), product.getPrice().getRealPriceText(), product.getImages()[0].getURL(), productURL));
@@ -100,7 +99,7 @@ public class AdvanceResultsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         Intent intent = new Intent(this, SearchingTaskActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         setResult(RESULT_OK, intent);
@@ -110,7 +109,7 @@ public class AdvanceResultsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home){
+        if (id == android.R.id.home) {
             Intent intent = new Intent(this, SearchingTaskActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             setResult(RESULT_OK, intent);

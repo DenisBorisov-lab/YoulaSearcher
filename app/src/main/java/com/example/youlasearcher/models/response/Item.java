@@ -1,6 +1,6 @@
 package com.example.youlasearcher.models.response;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Item {
     private String typename;
@@ -8,17 +8,32 @@ public class Item {
     private ProductAnalytics productAnalytics;
 
     @JsonProperty("__typename")
-    public String getTypename() { return typename; }
+    public String getTypename() {
+        return typename;
+    }
+
     @JsonProperty("__typename")
-    public void setTypename(String value) { this.typename = value; }
+    public void setTypename(String value) {
+        this.typename = value;
+    }
 
     @JsonProperty("product")
-    public Product getProduct() { return product; }
+    public Product getProduct() {
+        return product;
+    }
+
     @JsonProperty("product")
-    public void setProduct(Product value) { this.product = value; }
+    public void setProduct(Product value) {
+        this.product = value;
+    }
 
     @JsonProperty("productAnalytics")
-    public ProductAnalytics getProductAnalytics() { return productAnalytics; }
+    public ProductAnalytics getProductAnalytics() {
+        return productAnalytics;
+    }
+
     @JsonProperty("productAnalytics")
-    public void setProductAnalytics(ProductAnalytics value) { this.productAnalytics = value; }
+    public void setProductAnalytics(ProductAnalytics value) {
+        this.productAnalytics = value;
+    }
 }

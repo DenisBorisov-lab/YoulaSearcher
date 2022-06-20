@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.util.List;
 
 public class BannerStateAdapter extends ArrayAdapter<BannerState> {
+    private final static String FILE_NAME = "content.txt";
     private List<BannerState> states;
     private int layout;
     private LayoutInflater inflater;
-    private final static String FILE_NAME = "content.txt";
 
     public BannerStateAdapter(Context context, int resource, List<BannerState> states) {
         super(context, resource, states);
@@ -82,9 +82,9 @@ public class BannerStateAdapter extends ArrayAdapter<BannerState> {
             intent.putExtra("id", state.getId());
             boolean active = state.isActive();
             String activeString = new String();
-            if (active){
+            if (active) {
                 activeString = "true";
-            }else{
+            } else {
                 activeString = "false";
             }
             intent.putExtra("active", activeString);
@@ -137,11 +137,11 @@ public class BannerStateAdapter extends ArrayAdapter<BannerState> {
         return null;
     }
 
-    public void setActive(BannerState state){
+    public void setActive(BannerState state) {
         String oldData = readData() == null ? "" : readData();
         String data = "";
         String activeString = "true";
-        if (!state.isActive()){
+        if (!state.isActive()) {
             activeString = "false";
         }
         if (oldData.length() != 0) {

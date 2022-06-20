@@ -1,30 +1,50 @@
 package com.example.youlasearcher.models.request;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Location {
-    private Object latitude;
-    private Object longitude;
-    private String city;
-    private Object distanceMax;
+    private Double latitude;
+    private Double longitude;
+    private Object city;
+    private Long distanceMax;
 
     @JsonProperty("latitude")
-    public Object getLatitude() { return latitude; }
+    public Double getLatitude() {
+        return latitude;
+    }
+
     @JsonProperty("latitude")
-    public void setLatitude(Object value) { this.latitude = value; }
+    public void setLatitude(Double value) {
+        this.latitude = value;
+    }
 
     @JsonProperty("longitude")
-    public Object getLongitude() { return longitude; }
+    public Double getLongitude() {
+        return longitude;
+    }
+
     @JsonProperty("longitude")
-    public void setLongitude(Object value) { this.longitude = value; }
+    public void setLongitude(Double value) {
+        this.longitude = value;
+    }
 
     @JsonProperty("city")
-    public String getCity() { return city; }
+    public Object getCity() {
+        return city;
+    }
+
     @JsonProperty("city")
-    public void setCity(String value) { this.city = value; }
+    public void setCity(Object value) {
+        this.city = value;
+    }
 
     @JsonProperty("distanceMax")
-    public Object getDistanceMax() { return distanceMax; }
+    public Long getDistanceMax() {
+        return distanceMax;
+    }
+
     @JsonProperty("distanceMax")
-    public void setDistanceMax(Object value) { this.distanceMax = value; }
+    public void setDistanceMax(Long value) {
+        this.distanceMax = value;
+    }
 }

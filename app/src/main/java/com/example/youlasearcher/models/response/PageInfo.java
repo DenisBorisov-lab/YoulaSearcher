@@ -1,6 +1,6 @@
 package com.example.youlasearcher.models.response;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PageInfo {
     private String cursor;
@@ -10,27 +10,52 @@ public class PageInfo {
     private String typename;
 
     @JsonProperty("cursor")
-    public String getCursor() { return cursor; }
+    public String getCursor() {
+        return cursor;
+    }
+
     @JsonProperty("cursor")
-    public void setCursor(String value) { this.cursor = value; }
+    public void setCursor(String value) {
+        this.cursor = value;
+    }
 
     @JsonProperty("hasNextPage")
-    public Boolean getHasNextPage() { return hasNextPage; }
+    public Boolean getHasNextPage() {
+        return hasNextPage;
+    }
+
     @JsonProperty("hasNextPage")
-    public void setHasNextPage(Boolean value) { this.hasNextPage = value; }
+    public void setHasNextPage(Boolean value) {
+        this.hasNextPage = value;
+    }
 
     @JsonProperty("personalSearchId")
-    public Object getPersonalSearchID() { return personalSearchID; }
+    public Object getPersonalSearchID() {
+        return personalSearchID;
+    }
+
     @JsonProperty("personalSearchId")
-    public void setPersonalSearchID(Object value) { this.personalSearchID = value; }
+    public void setPersonalSearchID(Object value) {
+        this.personalSearchID = value;
+    }
 
     @JsonProperty("productsAnalytics")
-    public ProductsAnalytics getProductsAnalytics() { return productsAnalytics; }
+    public ProductsAnalytics getProductsAnalytics() {
+        return productsAnalytics;
+    }
+
     @JsonProperty("productsAnalytics")
-    public void setProductsAnalytics(ProductsAnalytics value) { this.productsAnalytics = value; }
+    public void setProductsAnalytics(ProductsAnalytics value) {
+        this.productsAnalytics = value;
+    }
 
     @JsonProperty("__typename")
-    public String getTypename() { return typename; }
+    public String getTypename() {
+        return typename;
+    }
+
     @JsonProperty("__typename")
-    public void setTypename(String value) { this.typename = value; }
+    public void setTypename(String value) {
+        this.typename = value;
+    }
 }

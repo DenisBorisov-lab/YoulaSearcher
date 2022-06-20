@@ -27,7 +27,7 @@ public class PreviewStateAdapter extends ArrayAdapter<PreviewState> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View view=inflater.inflate(this.layout, parent, false);
+        View view = inflater.inflate(this.layout, parent, false);
 
         ImageView imageView = view.findViewById(R.id.preview_image);
         TextView nameView = view.findViewById(R.id.preview_name);

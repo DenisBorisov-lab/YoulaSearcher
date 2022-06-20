@@ -14,11 +14,11 @@ import lombok.SneakyThrows;
 public class PostServiceImpl implements PostService {
 
     private final URL url;
-    private Request model;
     private final ObjectMapper mapper;
+    private Request model;
 
     @SneakyThrows
-    public PostServiceImpl(Request model){
+    public PostServiceImpl(Request model) {
         this.model = model;
         url = new URL("https://api-gw.youla.io/federation/graphql");
         mapper = new ObjectMapper();
@@ -34,12 +34,12 @@ public class PostServiceImpl implements PostService {
         connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
         String body = javaObjetToString();
-        try (OutputStream os = connection.getOutputStream()){
+        try (OutputStream os = connection.getOutputStream()) {
             byte[] input = body.getBytes("utf-8");
             os.write(input, 0, input.length);
         }
 
-        try(BufferedReader br = new BufferedReader(
+        try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(connection.getInputStream(), "utf-8"))) {
             StringBuilder response = new StringBuilder();
             String responseLine = null;

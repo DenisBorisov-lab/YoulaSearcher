@@ -1,30 +1,50 @@
 package com.example.youlasearcher.models.request;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Attribute {
     private String slug;
     private String[] value;
-    private Long from;
-    private Long to;
+    private Object from;
+    private Object to;
 
     @JsonProperty("slug")
-    public String getSlug() { return slug; }
+    public String getSlug() {
+        return slug;
+    }
+
     @JsonProperty("slug")
-    public void setSlug(String value) { this.slug = value; }
+    public void setSlug(String value) {
+        this.slug = value;
+    }
 
     @JsonProperty("value")
-    public String[] getValue() { return value; }
+    public String[] getValue() {
+        return value;
+    }
+
     @JsonProperty("value")
-    public void setValue(String[] value) { this.value = value; }
+    public void setValue(String[] value) {
+        this.value = value;
+    }
 
     @JsonProperty("from")
-    public Long getFrom() { return from; }
+    public Object getFrom() {
+        return from;
+    }
+
     @JsonProperty("from")
-    public void setFrom(Long value) { this.from = value; }
+    public void setFrom(Object value) {
+        this.from = value;
+    }
 
     @JsonProperty("to")
-    public Long getTo() { return to; }
+    public Object getTo() {
+        return to;
+    }
+
     @JsonProperty("to")
-    public void setTo(Long value) { this.to = value; }
+    public void setTo(Object value) {
+        this.to = value;
+    }
 }

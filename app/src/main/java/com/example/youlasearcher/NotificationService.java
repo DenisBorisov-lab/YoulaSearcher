@@ -1,6 +1,5 @@
 package com.example.youlasearcher;
 
-import static androidx.core.app.NotificationCompat.DEFAULT_ALL;
 import static androidx.core.app.NotificationCompat.PRIORITY_HIGH;
 
 import android.app.NotificationChannel;
@@ -12,7 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -44,15 +42,22 @@ import java.util.Set;
 import lombok.SneakyThrows;
 
 public class NotificationService extends Service {
+    private static final String CHANNEL_ID = "CHANNEL_ID";
     private Set<String> searching;
     private DataService dataService;
     private PostService postService;
     private NotificationManager notificationManager;
-    private static final String CHANNEL_ID = "CHANNEL_ID";
     private int NOTIFY_ID = 1;
     private SharedPreferences sharedPreferences;
     private boolean vibration;
     private boolean wifiSearching;
+
+    public static void createChannelIfNeeded(NotificationManager manager) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT);
+            manager.createNotificationChannel(notificationChannel);
+        }
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -160,7 +165,7 @@ public class NotificationService extends Service {
                             items = anotherItems;
 
                             for (Item item : pushItems) {
-                                if (searching.contains(id)){
+                                if (searching.contains(id)) {
                                     sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL());
                                 }
                                 try {
@@ -243,13 +248,6 @@ public class NotificationService extends Service {
         createChannelIfNeeded(notificationManager);
         notificationManager.notify(NOTIFY_ID, notificationBuilder.build());
         NOTIFY_ID++;
-    }
-
-    public static void createChannelIfNeeded(NotificationManager manager) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT);
-            manager.createNotificationChannel(notificationChannel);
-        }
     }
 
     private boolean isConnectedViaWifi() {

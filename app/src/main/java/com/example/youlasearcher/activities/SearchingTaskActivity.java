@@ -38,11 +38,11 @@ import java.util.UUID;
 public class SearchingTaskActivity extends AppCompatActivity implements Changeable, ChangeableTime {
 
     static final String URL = "URL";
+    private final static String FILE_NAME = "content.txt";
     private List<State> states = new ArrayList<>();
     private ListView symbolsList;
     private EditText name;
     private FloatingActionButton saveButton;
-    private final static String FILE_NAME = "content.txt";
     private State period;
     private State timeModule;
     private State options;

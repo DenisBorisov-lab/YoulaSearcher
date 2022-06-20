@@ -1,9 +1,9 @@
 package com.example.youlasearcher.services;
 
 public class PeriodTimeService {
-    public static long getMilliseconds(String period){
+    public static long getMilliseconds(String period) {
         long time = 0L;
-        switch (period){
+        switch (period) {
             case "Каждую минуту":
                 time = 60 * 1000;
                 break;
@@ -14,7 +14,7 @@ public class PeriodTimeService {
                 time = 5 * 60 * 1000;
                 break;
             case "Каждые 10 минут":
-                time= 10 * 60 * 1000;
+                time = 10 * 60 * 1000;
                 break;
             case "Каждые 15 минут":
                 time = 15 * 60 * 1000;

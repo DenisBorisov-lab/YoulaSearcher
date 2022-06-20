@@ -1,7 +1,6 @@
 package com.example.youlasearcher.activities;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -21,8 +20,6 @@ import com.example.youlasearcher.R;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-
-import lombok.SneakyThrows;
 
 public class SearchingSettingsActivity extends AppCompatActivity {
     private WebView webView;
@@ -53,8 +50,8 @@ public class SearchingSettingsActivity extends AppCompatActivity {
                 String cookies = CookieManager.getInstance().getCookie(url);
                 String[] attributes = cookies.split("; ");
                 String location = "";
-                for (String attribute : attributes){
-                    if (attribute.split("=")[0].equals("location")){
+                for (String attribute : attributes) {
+                    if (attribute.split("=")[0].equals("location")) {
                         location = attribute.split("=")[1];
                     }
                 }
@@ -78,7 +75,6 @@ public class SearchingSettingsActivity extends AppCompatActivity {
             setResult(RESULT_OK, intent);
             finish();
         });
-
 
 
     }

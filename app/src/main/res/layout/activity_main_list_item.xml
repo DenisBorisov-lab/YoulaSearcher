@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_cd"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_margin="10dp"
-    android:id="@+id/layout_cd">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,19 +16,19 @@
             android:id="@+id/item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Title"
-            android:textColor="@color/black"
-            android:textSize="20sp"
             android:layout_gravity="center_vertical|start"
             android:layout_marginStart="7dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="Title"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/item_switch_compat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp" />
 
     </LinearLayout>
 
@@ -40,19 +40,18 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_marginStart="7dp"
             android:src="@drawable/ic_refresh"
-            app:tint="@color/grey"
-            android:layout_marginStart="7dp"/>
+            app:tint="@color/grey" />
 
         <TextView
             android:id="@+id/period_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="period"
-            android:textSize="16sp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="13dp"
-            />
+            android:text="period"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -72,14 +71,12 @@
             android:id="@+id/schedule_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="schedule"
-            android:textSize="16sp"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="13dp"/>
+            android:layout_marginStart="13dp"
+            android:text="schedule"
+            android:textSize="16sp" />
 
     </LinearLayout>
-
-
 
 
 </LinearLayout>
