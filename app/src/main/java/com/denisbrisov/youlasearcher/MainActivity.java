@@ -153,7 +153,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopSearching() {
+        if (states == null){
+            return;
+        }
         for (BannerState state : states) {
+            if (state == null){
+                continue;
+            }
             state.setActive(false);
             setActive(state);
             Intent serviceIntent = new Intent(MainActivity.this, NotificationService.class);
@@ -212,7 +218,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startSearching() {
+        if (states == null){
+            return;
+        }
         for (BannerState state : states) {
+            if (state == null){
+                continue;
+            }
             state.setActive(true);
             setActive(state);
             Intent serviceIntent = new Intent(MainActivity.this, NotificationService.class);

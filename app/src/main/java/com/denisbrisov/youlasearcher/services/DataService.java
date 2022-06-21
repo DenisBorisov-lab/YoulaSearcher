@@ -232,12 +232,12 @@ public class DataService {
 
     @SneakyThrows
     private Location getLocation() {
-        LocationModel location = mapper.readValue(json, LocationModel.class);
+
 
         Location result = new Location();
 
         try{
-
+            LocationModel location = mapper.readValue(json, LocationModel.class);
             result.setCity(location.getCity().getID());
             result.setDistanceMax(location.getR());
             result.setLatitude(location.getCity().getCoords().getLatitude());
