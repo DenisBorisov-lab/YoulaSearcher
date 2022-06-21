@@ -12,6 +12,9 @@ import com.example.youlasearcher.models.response.YoulaResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -110,6 +113,7 @@ public class DataService {
         return value;
     }
 
+    @SneakyThrows
     private String getSearch() {
         String value = "";
         if (attributes[0].equals("")) {
@@ -117,7 +121,7 @@ public class DataService {
         }
         for (String attribute : attributes) {
             if (attribute.charAt(0) == 'q' && attribute.length() > 1) {
-                value = attribute.split("=")[1];
+                value = URLDecoder.decode(attribute.split("=")[1], StandardCharsets.UTF_8.name());
             }
         }
 

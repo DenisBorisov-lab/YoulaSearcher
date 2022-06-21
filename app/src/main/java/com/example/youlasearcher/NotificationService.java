@@ -43,7 +43,7 @@ import java.util.Set;
 import lombok.SneakyThrows;
 
 public class NotificationService extends Service {
-    private static final String CHANNEL_ID = "CHANNEL_ID";
+    private static final String CHANNEL_ID = "youla";
     private Set<String> searching;
     private DataService dataService;
     private PostService postService;
@@ -69,6 +69,7 @@ public class NotificationService extends Service {
     public void onCreate() {
         super.onCreate();
         searching = new HashSet<>();
+        notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         vibration = sharedPreferences.getBoolean("vibration", true);
         wifiSearching = sharedPreferences.getBoolean("wifi_searching", false);
@@ -79,10 +80,13 @@ public class NotificationService extends Service {
                 notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(this)
+                .setChannelId(CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_search)
                 .setContentTitle("Запущена фоновая работа приложения")
                 .setContentText("Выполняются запросы на сервер")
                 .setContentIntent(pendingIntent).build();
+
+        createChannelIfNeeded(notificationManager);
 
         startForeground(1337, notification);
 
@@ -91,7 +95,7 @@ public class NotificationService extends Service {
     @Override
     @SneakyThrows
     public int onStartCommand(Intent intent, int flags, int startId) {
-        notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
 
         Bundle extras = intent.getExtras();
         Modes mode = (Modes) extras.get("mode");
