@@ -53,11 +53,13 @@ public class TimePickerDialogFragment extends DialogFragment {
                 TimePickerDialog.OnTimeSetListener t = new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        dateAndTime.set(Calendar.HOUR_OF_DAY, i);
-                        dateAndTime.set(Calendar.MINUTE, i1);
-                        String time = DateUtils.formatDateTime(getActivity(),
-                                dateAndTime.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME);
-                        start.setText(time);
+//                        dateAndTime.set(Calendar.HOUR_OF_DAY, i);
+//                        dateAndTime.set(Calendar.MINUTE, i1);
+//                        String time = DateUtils.formatDateTime(getActivity(),
+//                                dateAndTime.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME);
+                        String a = Integer.toString(i);
+                        String b = Integer.toString(i1);
+                        start.setText(a + ":" + b);
                     }
                 };
 
@@ -77,12 +79,13 @@ public class TimePickerDialogFragment extends DialogFragment {
                 TimePickerDialog.OnTimeSetListener t = new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        dateAndTime.set(Calendar.HOUR_OF_DAY, i);
-                        dateAndTime.set(Calendar.MINUTE, i1);
-                        String time = DateUtils.formatDateTime(getActivity(),
-                                dateAndTime.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME);
-
-                        end.setText(time);
+//                        dateAndTime.set(Calendar.HOUR_OF_DAY, i);
+//                        dateAndTime.set(Calendar.MINUTE, i1);
+//                        String time = DateUtils.formatDateTime(getActivity(),
+//                                dateAndTime.getTimeInMillis(), DateUtils.FORMAT_SHOW_TIME);
+                        String a = Integer.toString(i);
+                        String b = Integer.toString(i1);
+                        end.setText(a + ":" + b);
                     }
                 };
                 new TimePickerDialog(getActivity(), t,

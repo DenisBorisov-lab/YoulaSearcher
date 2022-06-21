@@ -10,4 +10,6 @@
     <color name="grey">#d7d9d8</color>
     <color name="grey_200">#EEEEEE</color>
     <color name="dark_grey">#303030</color>
+    <color name="pink_500">#ee4e7c</color>
+    <color name="pink_200">#fe5282</color>
 </resources>

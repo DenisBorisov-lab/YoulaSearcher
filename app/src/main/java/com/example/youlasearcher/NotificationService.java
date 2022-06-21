@@ -2,6 +2,7 @@ package com.example.youlasearcher;
 
 import static androidx.core.app.NotificationCompat.PRIORITY_HIGH;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -71,6 +72,19 @@ public class NotificationService extends Service {
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         vibration = sharedPreferences.getBoolean("vibration", true);
         wifiSearching = sharedPreferences.getBoolean("wifi_searching", false);
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_search)
+                .setContentTitle("Запущена фоновая работа приложения")
+                .setContentText("Выполняются запросы на сервер")
+                .setContentIntent(pendingIntent).build();
+
+        startForeground(1337, notification);
 
     }
 

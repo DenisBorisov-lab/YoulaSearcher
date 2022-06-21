@@ -43,7 +43,7 @@ public class AdvanceResultsActivity extends AppCompatActivity {
         Bundle arguments = getIntent().getExtras();
         SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
         location = settings.getString("location", "");
-        url = "https://youla.ru/moskva/hobbi-razvlecheniya/konsoli-igry";
+        url = arguments.getString("url");
         products = findViewById(R.id.preview_list);
         states = new ArrayList<>();
 
