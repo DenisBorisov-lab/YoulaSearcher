@@ -110,7 +110,7 @@ public class DataService {
                 break;
         }
 
-        return value;
+        return "DATE_PUBLISHED_DESC";
     }
 
     @SneakyThrows
@@ -235,12 +235,22 @@ public class DataService {
         LocationModel location = mapper.readValue(json, LocationModel.class);
 
         Location result = new Location();
-        result.setCity(location.getCity().getID());
-        result.setDistanceMax(location.getR());
-        result.setLatitude(location.getCity().getCoords().getLatitude());
-        result.setLongitude(location.getCity().getCoords().getLongitude());
 
+        try{
+
+            result.setCity(location.getCity().getID());
+            result.setDistanceMax(location.getR());
+            result.setLatitude(location.getCity().getCoords().getLatitude());
+            result.setLongitude(location.getCity().getCoords().getLongitude());
+        }catch (Exception ex){
+            result.setCity("576d0612d53f3d80945f8b5d");
+            result.setDistanceMax(null);
+            result.setLatitude(null);
+            result.setLongitude(null);
+        }
         return result;
+
+
     }
 
 }

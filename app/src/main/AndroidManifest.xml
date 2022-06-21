@@ -58,7 +58,7 @@
         <activity
             android:name=".activities.SearchingSettingsActivity"
             android:label="Настройка автопоиска"
-            android:parentActivityName=".activities.SearchingTaskActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.AdvanceResultsActivity"
             android:label="Результат поиска" />

@@ -57,9 +57,12 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
 
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent intent = result.getData();
-                        String url = intent.getStringExtra(URL);
-                        options.setSubTitle(url);
-                        stateAdapter.notifyDataSetChanged();
+                        String url = null;
+                        if (intent != null) {
+                            url = intent.getStringExtra(URL);
+                            options.setSubTitle(url);
+                            stateAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
             });
