@@ -53,6 +53,7 @@ public class NotificationService extends Service {
     private SharedPreferences sharedPreferences;
     private boolean vibration;
     private boolean wifiSearching;
+    private Set<String> oldIds;
 
     public static void createChannelIfNeeded(NotificationManager manager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -69,6 +70,7 @@ public class NotificationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        oldIds = new HashSet<>();
         searching = new HashSet<>();
         notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -132,11 +134,16 @@ public class NotificationService extends Service {
                     String stringObjects = postService.post();
                     YoulaResponse objects = dataService.getResultedObject(stringObjects);
                     Item[] items = objects.getData().getFeed().getItems();
+                    for(Item item : items){
+                        if (item != null && item.getProduct() != null){
+                            oldIds.add(item.getProduct().getID());
+                        }
+                    }
                     long period = PeriodTimeService.getMilliseconds(time);
                     while (searching.contains(id) && active.equals("true")) {
                         boolean isConnected = isConnectedViaWifi();
                         if (TimeParseService.isAvailableForTime(workTime) && (!wifiSearching || wifiSearching == isConnected)) {
-                            System.out.println("Цикл запущен");
+                            System.out.println("Цикл запущен" + name);
                             try {
                                 Thread.sleep(period);
                             } catch (InterruptedException e) {
@@ -145,15 +152,17 @@ public class NotificationService extends Service {
                             String anotherStringObjects = postService.post();
                             YoulaResponse anotherObjects = dataService.getResultedObject(anotherStringObjects);
                             Item[] anotherItems = anotherObjects.getData().getFeed().getItems();
-                            List<Item> pushItems = getDifferentItems(items, anotherItems);
-                            items = anotherItems;
-
-                            for (Item item : pushItems) {
-                                sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL());
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                            for (Item item : anotherItems){
+                                if (item != null && item.getProduct() != null){
+                                    if(!oldIds.contains(item.getProduct().getID())){
+                                        sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL());
+                                        oldIds.add(item.getProduct().getID());
+                                    }
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
@@ -167,11 +176,16 @@ public class NotificationService extends Service {
                     String stringObjects = postService.post();
                     YoulaResponse objects = dataService.getResultedObject(stringObjects);
                     Item[] items = objects.getData().getFeed().getItems();
+                    for(Item item : items){
+                        if (item != null && item.getProduct() != null){
+                            oldIds.add(item.getProduct().getID());
+                        }
+                    }
                     long period = PeriodTimeService.getMilliseconds(time);
                     while (searching.contains(id) && active.equals("true")) {
                         boolean isConnected = isConnectedViaWifi();
                         if (TimeParseService.isAvailableForTime(workTime) && (!wifiSearching || wifiSearching == isConnected)) {
-                            System.out.println("Цикл запущен");
+                            System.out.println("Цикл запущен " + name);
                             try {
                                 Thread.sleep(period);
                             } catch (InterruptedException e) {
@@ -180,17 +194,17 @@ public class NotificationService extends Service {
                             String anotherStringObjects = postService.post();
                             YoulaResponse anotherObjects = dataService.getResultedObject(anotherStringObjects);
                             Item[] anotherItems = anotherObjects.getData().getFeed().getItems();
-                            List<Item> pushItems = getDifferentItems(items, anotherItems);
-                            items = anotherItems;
-
-                            for (Item item : pushItems) {
-                                if (searching.contains(id)) {
-                                    sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL());
-                                }
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                            for (Item item : anotherItems){
+                                if (item != null && item.getProduct() != null){
+                                    if(!oldIds.contains(item.getProduct().getID())){
+                                        sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL());
+                                        oldIds.add(item.getProduct().getID());
+                                    }
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }

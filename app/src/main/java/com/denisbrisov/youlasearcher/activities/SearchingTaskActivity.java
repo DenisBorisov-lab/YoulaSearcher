@@ -1,6 +1,8 @@
 package com.denisbrisov.youlasearcher.activities;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -167,6 +169,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                         break;
                     case "Параметры поиска":
                         Intent settingsActivity = new Intent(SearchingTaskActivity.this, SearchingSettingsActivity.class);
+                        settingsActivity.putExtra("url", options.getSubTitle());
                         mStartForResult.launch(settingsActivity);
                         break;
                     default:
@@ -232,6 +235,20 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
             Intent mainActivity = new Intent(SearchingTaskActivity.this, MainActivity.class);
             startActivity(mainActivity);
             return true;
+        } else if (id == R.id.copy) {
+            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText("link", options.getSubTitle());
+            clipboardManager.setPrimaryClip(clipData);
+
+            // TODO: 22.06.2022 скопировать в буфер
+        } else if (id == R.id.paste) {
+            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            ClipData data = clipboardManager.getPrimaryClip();
+            ClipData.Item elem = data.getItemAt(0);
+            String text = elem.getText().toString();
+            options.setSubTitle(text);
+            stateAdapter.notifyDataSetChanged();
+            // TODO: 22.06.2022 вставить из буфера
         }
         return super.onOptionsItemSelected(item);
     }

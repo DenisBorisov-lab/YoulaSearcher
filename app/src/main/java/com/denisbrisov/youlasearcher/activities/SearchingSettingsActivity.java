@@ -33,12 +33,20 @@ public class SearchingSettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_searching_settings);
         webView = findViewById(R.id.web_view);
 
+        Bundle extras = getIntent().getExtras();
+        String link = extras.getString("url");
+
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setAllowContentAccess(true);
         settings.setDomStorageEnabled(true);
         webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        webView.loadUrl("https://youla.ru/");
+        if (link.equals("Нажмите для настройки")){
+            link = "https://youla.ru/";
+        }
+        webView.loadUrl(link);
+
+
         webView.setWebViewClient(new MyWebViewClient());
 
         progressBar = findViewById(R.id.progressBar);
