@@ -22,4 +22,19 @@ public class TimeParseService {
         boolean b = currentTime.before(endDate);
         return a && b;
     }
+
+    @SneakyThrows
+    public static boolean isNewProduct(long unix, long period){
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+//        Date productTimePublished = simpleDateFormat.parse(productTimePublishedString);
+//        long startTime = System.currentTimeMillis() - period;
+//        Date startDate = new Date(startTime);
+//        boolean result = startDate.after(productTimePublished);
+
+
+        long unixNow = System.currentTimeMillis();
+        long difference = unixNow - unix;
+        boolean result = difference <= period;
+        return result;
+    }
 }

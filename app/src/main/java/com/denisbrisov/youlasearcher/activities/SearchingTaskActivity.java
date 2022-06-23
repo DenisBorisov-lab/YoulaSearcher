@@ -107,13 +107,14 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
 
                     String oldData = readData() == null ? "" : readData();
                     String data = "";
+                    String newUUID = UUID.randomUUID().toString();
                     boolean isExist = false;
                     if (oldData.length() != 0) {
                         for (String row : oldData.split("\n")) {
                             String[] elements = row.split("@");
                             if (elements[4].equals(uuid[0])) {
                                 isExist = true;
-                                String newRow = name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + uuid[0] + "@" + activeString + "\n";
+                                String newRow = name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + newUUID + "@" + activeString + "\n";
                                 data += newRow;
                             } else {
                                 data += row + "\n";
@@ -121,20 +122,42 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
                         }
                     }
 
-                    if (!isExist) {
-                        uuid[0] = UUID.randomUUID().toString();
-                        data = oldData + name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + uuid[0] + "@" + activeString + "\n";
-                    }
                     Intent intent = new Intent(SearchingTaskActivity.this, NotificationService.class);
-                    intent.putExtra("mode", Modes.CREATE);
-                    intent.putExtra("name", name.getText().toString());
-                    intent.putExtra("url", url);
-                    intent.putExtra("workTime", workTime);
-                    intent.putExtra("time", time);
-                    intent.putExtra("id", uuid[0]);
-                    intent.putExtra("active", activeString);
 
-                    startService(intent);
+                    if (!isExist) {
+                        data = oldData + name.getText().toString() + "@" + workTime + "@" + time + "@" + url + "@" + newUUID + "@" + activeString + "\n";
+                        intent.putExtra("mode", Modes.CREATE);
+                        intent.putExtra("name", name.getText().toString());
+                        intent.putExtra("url", url);
+                        intent.putExtra("workTime", workTime);
+                        intent.putExtra("time", time);
+                        intent.putExtra("id", newUUID);
+                        intent.putExtra("active", activeString);
+
+                        startService(intent);
+                    }else{
+                        intent.putExtra("mode", Modes.DELETE);
+                        intent.putExtra("name", name.getText().toString());
+                        intent.putExtra("url", url);
+                        intent.putExtra("workTime", workTime);
+                        intent.putExtra("time", time);
+                        intent.putExtra("id", uuid[0]);
+                        intent.putExtra("active", activeString);
+
+                        startService(intent);
+
+                        Intent newIntent = new Intent(SearchingTaskActivity.this, NotificationService.class);
+                        newIntent.putExtra("mode", Modes.CREATE);
+                        newIntent.putExtra("name", name.getText().toString());
+                        newIntent.putExtra("url", url);
+                        newIntent.putExtra("workTime", workTime);
+                        newIntent.putExtra("time", time);
+                        newIntent.putExtra("id", newUUID);
+                        newIntent.putExtra("active", activeString);
+                        startService(newIntent);
+                    }
+
+
                     writeData(data);
 
                     Intent mainActivity = new Intent(SearchingTaskActivity.this, MainActivity.class);

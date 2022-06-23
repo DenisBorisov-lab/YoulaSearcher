@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -27,6 +28,8 @@ import com.denisbrisov.youlasearcher.models.request.Request;
 import com.denisbrisov.youlasearcher.models.response.Item;
 import com.denisbrisov.youlasearcher.models.response.YoulaResponse;
 import com.denisbrisov.youlasearcher.services.DataService;
+import com.denisbrisov.youlasearcher.services.GetService;
+import com.denisbrisov.youlasearcher.services.GetServiceImpl;
 import com.denisbrisov.youlasearcher.services.PeriodTimeService;
 import com.denisbrisov.youlasearcher.services.PostService;
 import com.denisbrisov.youlasearcher.services.PostServiceImpl;
@@ -35,10 +38,7 @@ import com.denisbrisov.youlasearcher.services.TimeParseService;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import lombok.SneakyThrows;
@@ -46,14 +46,12 @@ import lombok.SneakyThrows;
 public class NotificationService extends Service {
     private static final String CHANNEL_ID = "youla";
     private Set<String> searching;
-    private DataService dataService;
-    private PostService postService;
     private NotificationManager notificationManager;
     private int NOTIFY_ID = 1;
     private SharedPreferences sharedPreferences;
     private boolean vibration;
     private boolean wifiSearching;
-    private Set<String> oldIds;
+    private GetService getService;
 
     public static void createChannelIfNeeded(NotificationManager manager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -70,7 +68,7 @@ public class NotificationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        oldIds = new HashSet<>();
+        getService = new GetServiceImpl();
         searching = new HashSet<>();
         notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         sharedPreferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -116,110 +114,58 @@ public class NotificationService extends Service {
         }
         SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
         String location = settings.getString("location", null);
-        dataService = new DataService(domain, attributes, location);
-        Request model = dataService.getModelRequest();
-        postService = new PostServiceImpl(model);
         if (mode == Modes.CREATE) {
-            if (searching.contains(id)) {
-                // TODO: 19.06.2022 изменить поиск и стартануть его заново
-                searching.remove(id);
-                try {
-                    Thread.sleep(1000 / 4);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            String finalAttributes = attributes;
+            searching.add(id);
+
+            new Thread(() -> {
+                String params = finalAttributes;
+                String finalName = name;
+                String finalId = id;
+                String finalActive = active;
+                long period = PeriodTimeService.getMilliseconds(time);
+                String finalDomain = domain;
+                String finalWokTime = workTime;
+
+                while (searching.contains(finalId) && finalActive.equals("true")) {
+                    System.out.println("Цикл запущен " + finalName);
+                    try {
+                        Thread.sleep(period);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    DataService dataService = new DataService(finalDomain, params, location);
+                    Request model = dataService.getModelRequest();
+                    PostService postService = new PostServiceImpl(model);
+                    boolean isConnected = isConnectedViaWifi();
+                    if (TimeParseService.isAvailableForTime(finalWokTime) && (!wifiSearching || wifiSearching == isConnected)) {
+                        String objects = postService.post();
+                        YoulaResponse anotherObjects = dataService.getResultedObject(objects);
+                        Item[] items = anotherObjects.getData().getFeed().getItems();
+                        for (Item item : items) {
+                            if (item != null) {
+                                if (item.getProduct() != null) {
+                                    String productId = item.getProduct().getID();
+                                    long productTimePublished = getService.get(productId);
+                                    if (TimeParseService.isNewProduct(productTimePublished, period) && searching.contains(finalId)) {
+                                        sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL(), finalName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    System.out.println("цикл остановлен");
+
                 }
-                searching.add(id);
-                new Thread(() -> {
-                    System.out.println("Цикл был изменён и запущен заново");
-                    String stringObjects = postService.post();
-                    YoulaResponse objects = dataService.getResultedObject(stringObjects);
-                    Item[] items = objects.getData().getFeed().getItems();
-                    for(Item item : items){
-                        if (item != null && item.getProduct() != null){
-                            oldIds.add(item.getProduct().getID());
-                        }
-                    }
-                    long period = PeriodTimeService.getMilliseconds(time);
-                    while (searching.contains(id) && active.equals("true")) {
-                        boolean isConnected = isConnectedViaWifi();
-                        if (TimeParseService.isAvailableForTime(workTime) && (!wifiSearching || wifiSearching == isConnected)) {
-                            System.out.println("Цикл запущен" + name);
-                            try {
-                                Thread.sleep(period);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            String anotherStringObjects = postService.post();
-                            YoulaResponse anotherObjects = dataService.getResultedObject(anotherStringObjects);
-                            Item[] anotherItems = anotherObjects.getData().getFeed().getItems();
-                            for (Item item : anotherItems){
-                                if (item != null && item.getProduct() != null){
-                                    if(!oldIds.contains(item.getProduct().getID())){
-                                        sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL());
-                                        oldIds.add(item.getProduct().getID());
-                                    }
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }).start();
-
-            } else {
-                searching.add(id);
-                new Thread(() -> {
-                    String stringObjects = postService.post();
-                    YoulaResponse objects = dataService.getResultedObject(stringObjects);
-                    Item[] items = objects.getData().getFeed().getItems();
-                    for(Item item : items){
-                        if (item != null && item.getProduct() != null){
-                            oldIds.add(item.getProduct().getID());
-                        }
-                    }
-                    long period = PeriodTimeService.getMilliseconds(time);
-                    while (searching.contains(id) && active.equals("true")) {
-                        boolean isConnected = isConnectedViaWifi();
-                        if (TimeParseService.isAvailableForTime(workTime) && (!wifiSearching || wifiSearching == isConnected)) {
-                            System.out.println("Цикл запущен " + name);
-                            try {
-                                Thread.sleep(period);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            String anotherStringObjects = postService.post();
-                            YoulaResponse anotherObjects = dataService.getResultedObject(anotherStringObjects);
-                            Item[] anotherItems = anotherObjects.getData().getFeed().getItems();
-                            for (Item item : anotherItems){
-                                if (item != null && item.getProduct() != null){
-                                    if(!oldIds.contains(item.getProduct().getID())){
-                                        sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL());
-                                        oldIds.add(item.getProduct().getID());
-                                    }
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    System.out.println("Цикл остановлен");
-                }).start();
-
-            }
+            }).start();
 
         } else {
             if (searching.contains(id)) {
                 searching.remove(id);
-                System.out.println("Пришёл запрос на остановку цикла");
+                System.out.println("Пришёл запрос на остановку цикла " + name);
             } else {
-                System.out.println("Такого поиска не было найдено");
+                System.out.println("Такого поиска не было найдено " + name);
             }
 
         }
@@ -232,48 +178,25 @@ public class NotificationService extends Service {
         super.onDestroy();
     }
 
-    public List<Item> getDifferentItems(Item[] first, Item[] second) {
-        List<Item> itemsFirst = Arrays.asList(first);
-        List<Item> itemsSecond = Arrays.asList(second);
-        List<Item> result = new ArrayList<>();
-        for (int i = 1; i < itemsSecond.size(); i++) {
-            Item newItem = itemsSecond.get(i);
-            if (newItem.getProduct() == null) {
-                continue;
-            }
-            boolean isExist = false;
-            for (int j = 1; j < itemsFirst.size(); j++) {
-                Item oldItem = itemsFirst.get(j);
-                if (oldItem.getProduct() == null) {
-                    continue;
-                }
-                if (newItem.getProduct().getID().equals(oldItem.getProduct().getID())) {
-                    isExist = true;
-                    break;
-                }
-            }
-            if (!isExist) {
-                result.add(newItem);
-            }
-        }
-        return result;
-    }
+    public void sendNotification(String title, String price, String url, String link, String group) {
 
-    // TODO: 18.06.2022 поставить иконку приложения
-    // TODO: 18.06.2022 установить рингтон
-    public void sendNotification(String title, String price, String url, String link) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youla.ru" + link));
         PendingIntent contentIntent = PendingIntent.getActivity(NotificationService.this,
                 0, browserIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT | FLAG_IMMUTABLE);
+                PendingIntent.FLAG_CANCEL_CURRENT);
+
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setLargeIcon(getBitmapFromURl(url))
                 .setSmallIcon(R.drawable.ic_search)
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(title)
                 .setContentText(price)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setAutoCancel(true)
                 .setContentIntent(contentIntent)
-                .setPriority(PRIORITY_HIGH);
+                .setPriority(PRIORITY_HIGH)
+                .setGroup(group);
         if (vibration) {
             notificationBuilder.setVibrate(new long[]{1000, 1000});
         }
