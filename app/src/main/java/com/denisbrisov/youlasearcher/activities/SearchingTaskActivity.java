@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -235,6 +236,7 @@ public class SearchingTaskActivity extends AppCompatActivity implements Changeab
             if (name.getText().toString().length() != 0 && !options.getSubTitle().equals("Нажмите для настройки")) {
                 Intent intent = new Intent(SearchingTaskActivity.this, NotificationService.class);
                 intent.putExtra("mode", Modes.DELETE);
+                intent.putExtra("id", uuid[0]);
                 intent.putExtra("name", name.getText().toString());
                 intent.putExtra("url", "");
                 intent.putExtra("workTime", "");

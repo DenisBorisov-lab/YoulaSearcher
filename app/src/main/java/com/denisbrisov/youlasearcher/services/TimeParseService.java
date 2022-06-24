@@ -34,7 +34,7 @@ public class TimeParseService {
 
         long unixNow = System.currentTimeMillis();
         long difference = unixNow - unix;
-        boolean result = difference <= period;
+        boolean result = difference <= period + 60000;
         return result;
     }
 }

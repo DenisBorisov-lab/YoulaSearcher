@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.denisbrisov.youlasearcher.models.Modes;
 import com.denisbrisov.youlasearcher.models.request.Request;
@@ -38,7 +39,9 @@ import com.denisbrisov.youlasearcher.services.TimeParseService;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import lombok.SneakyThrows;
@@ -52,6 +55,8 @@ public class NotificationService extends Service {
     private boolean vibration;
     private boolean wifiSearching;
     private GetService getService;
+    private String GROUP_KEY = "youla_searcher";
+    private int SUMMARY_ID = 0;
 
     public static void createChannelIfNeeded(NotificationManager manager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -117,7 +122,6 @@ public class NotificationService extends Service {
         if (mode == Modes.CREATE) {
             String finalAttributes = attributes;
             searching.add(id);
-
             new Thread(() -> {
                 String params = finalAttributes;
                 String finalName = name;
@@ -126,8 +130,9 @@ public class NotificationService extends Service {
                 long period = PeriodTimeService.getMilliseconds(time);
                 String finalDomain = domain;
                 String finalWokTime = workTime;
-
+                List<String> ids = new ArrayList<>();
                 while (searching.contains(finalId) && finalActive.equals("true")) {
+
                     System.out.println("Цикл запущен " + finalName);
                     try {
                         Thread.sleep(period);
@@ -147,15 +152,20 @@ public class NotificationService extends Service {
                                 if (item.getProduct() != null) {
                                     String productId = item.getProduct().getID();
                                     long productTimePublished = getService.get(productId);
-                                    if (TimeParseService.isNewProduct(productTimePublished, period) && searching.contains(finalId)) {
-                                        sendNotification(item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL(), finalName);
+                                    if (TimeParseService.isNewProduct(productTimePublished, period) && searching.contains(finalId) && !ids.contains(item.getProduct().getID())) {
+                                        sendNotificationGroup();
+                                        sendNotification(finalName,item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL(), finalName);
+                                        ids.add(item.getProduct().getID());
                                     }
                                 }
+                            }
+                            if (ids.size() >= 1000){
+                                ids.clear();
                             }
                         }
                     }
 
-                    System.out.println("цикл остановлен");
+                    System.out.println("цикл остановлен " + finalName);
 
                 }
             }).start();
@@ -178,30 +188,35 @@ public class NotificationService extends Service {
         super.onDestroy();
     }
 
-    public void sendNotification(String title, String price, String url, String link, String group) {
+    public void sendNotification(String title,String productName, String price, String url, String link, String group) {
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youla.ru" + link));
         PendingIntent contentIntent = PendingIntent.getActivity(NotificationService.this,
                 0, browserIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent.FLAG_CANCEL_CURRENT | FLAG_IMMUTABLE);
 
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setLargeIcon(getBitmapFromURl(url))
                 .setSmallIcon(R.drawable.ic_search)
                 .setWhen(System.currentTimeMillis())
-                .setContentTitle(title)
+                .setContentTitle(productName)
                 .setContentText(price)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setAutoCancel(true)
+                .setStyle(new NotificationCompat.InboxStyle()
+                        .addLine(price)
+                        .setBigContentTitle(productName)
+                        .setSummaryText(title))
                 .setContentIntent(contentIntent)
                 .setPriority(PRIORITY_HIGH)
-                .setGroup(group);
+                .setGroup(GROUP_KEY);
         if (vibration) {
             notificationBuilder.setVibrate(new long[]{1000, 1000});
         }
 
         createChannelIfNeeded(notificationManager);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(NOTIFY_ID, notificationBuilder.build());
         NOTIFY_ID++;
     }
@@ -221,5 +236,21 @@ public class NotificationService extends Service {
         connection.connect();
         in = connection.getInputStream();
         return BitmapFactory.decodeStream(in);
+    }
+
+    public void sendNotificationGroup(){
+        Notification summaryNotification =
+                new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                        .setContentTitle("Поиски")
+                        //set content text to support devices running API level < 24
+                        .setContentText("У вас новые сообщения")
+                        .setSmallIcon(R.drawable.ic_manage_search)
+                        //build summary info into InboxStyle template
+                        //specify which group this notification belongs to
+                        .setGroup(GROUP_KEY)
+                        //set this notification as the summary for the group
+                        .setGroupSummary(true)
+                        .build();
+        notificationManager.notify(SUMMARY_ID, summaryNotification);
     }
 }

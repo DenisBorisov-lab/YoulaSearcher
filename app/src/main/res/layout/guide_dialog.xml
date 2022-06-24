@@ -5,66 +5,77 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="10dp"
+                android:text="Что делает программа:"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Программа в фоновом режиме проверяет обьявления на сайте и при появлении новых предложений выводит автоматическое оповещение об этом."
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Как включить мониторинг:"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Для создания нового автоматического поиска необходимо нажать круглую кнопку +, после чего ввести его имя и настроить параметры поиска. Также можно установить свой интервал автоматической проверки объявлений. Далее следует сохранить поиск нажатием галочки (в кружке), после чего он появится в списке созданных поисков. Чтобы автоматический поиск работал, переключатель радом с его названием должен быть во включённом состоянии."
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Что дальше:"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="10dp"
+                android:text="После сохранения и включения автопоиска можно закрыть приложение и продолжить заниматься своими делами, оно будет проверять новые объявления за вас."
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </ScrollView>
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="10dp"
-        android:text="Что делает программа:"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="Программа в фоновом режиме проверяет обьявления на сайте и при появлении новых предложений выводит автоматическое оповещение об этом."
-        android:textColor="@color/black"
-        android:textSize="15sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="Как включить мониторинг:"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="Для создания нового автоматического поиска необходимо нажать круглую кнопку +, после чего ввести его имя и настроить параметры поиска. Также можно установить свой интервал автоматической проверки объявлений. Далее следует сохранить поиск нажатием галочки (в кружке), после чего он появится в списке созданных поисков. Чтобы автоматический поиск работал, переключатель радом с его названием должен быть во включённом состоянии."
-        android:textColor="@color/black"
-        android:textSize="15sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="Что дальше:"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="10dp"
-        android:text="После сохранения и включения автопоиска можно закрыть приложение и продолжить заниматься своими делами, оно будет проверять новые объявления за вас."
-        android:textColor="@color/black"
-        android:textSize="15sp" />
 
 
 </LinearLayout>
