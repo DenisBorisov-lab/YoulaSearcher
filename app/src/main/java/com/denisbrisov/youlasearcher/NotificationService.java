@@ -203,7 +203,7 @@ public class NotificationService extends Service {
                 PendingIntent.FLAG_CANCEL_CURRENT | FLAG_IMMUTABLE);
 
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setLargeIcon(getBitmapFromURl(url))
                 .setSmallIcon(R.drawable.ic_search)
                 .setWhen(System.currentTimeMillis())
@@ -224,7 +224,7 @@ public class NotificationService extends Service {
         }
 
         createChannelIfNeeded(notificationManager);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(NOTIFY_ID, notificationBuilder.build());
         NOTIFY_ID++;
     }
@@ -248,7 +248,7 @@ public class NotificationService extends Service {
 
     public void sendNotificationGroup(){
         Notification summaryNotification =
-                new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setContentTitle("Поиски")
                         //set content text to support devices running API level < 24
                         .setContentText("У вас новые сообщения")
