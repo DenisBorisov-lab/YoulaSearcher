@@ -43,8 +43,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="14dp"
         android:contentDescription="@string/extended_fab_label"
         app:fabSize="normal"
         app:srcCompat="@drawable/ic_plus" />

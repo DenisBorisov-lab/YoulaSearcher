@@ -2,6 +2,7 @@ package com.denisbrisov.youlasearcher;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static androidx.core.app.NotificationCompat.PRIORITY_HIGH;
+import static androidx.core.app.NotificationCompat.PRIORITY_LOW;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -57,6 +58,7 @@ public class NotificationService extends Service {
     private GetService getService;
     private String GROUP_KEY = "youla_searcher";
     private int SUMMARY_ID = 0;
+    private int count = 0;
 
     public static void createChannelIfNeeded(NotificationManager manager) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -90,6 +92,7 @@ public class NotificationService extends Service {
                 .setContentTitle("Запущена фоновая работа приложения")
                 .setContentText("Выполняются запросы на сервер")
                 .setContentIntent(pendingIntent)
+                .setPriority(PRIORITY_LOW)
                 .build();
 
         createChannelIfNeeded(notificationManager);
@@ -153,9 +156,13 @@ public class NotificationService extends Service {
                                     String productId = item.getProduct().getID();
                                     long productTimePublished = getService.get(productId);
                                     if (TimeParseService.isNewProduct(productTimePublished, period) && searching.contains(finalId) && !ids.contains(item.getProduct().getID())) {
-                                        sendNotificationGroup();
+                                        if (count > 4){
+                                            sendNotificationGroup();
+                                            count = 0;
+                                        }
                                         sendNotification(finalName,item.getProduct().getName(), item.getProduct().getPrice().getRealPriceText(), item.getProduct().getImages()[0].getURL(), item.getProduct().getURL(), finalName);
                                         ids.add(item.getProduct().getID());
+                                        count++;
                                     }
                                 }
                             }
@@ -206,6 +213,7 @@ public class NotificationService extends Service {
                 .setAutoCancel(true)
                 .setStyle(new NotificationCompat.InboxStyle()
                         .addLine(price)
+                        .addLine("")
                         .setBigContentTitle(productName)
                         .setSummaryText(title))
                 .setContentIntent(contentIntent)
